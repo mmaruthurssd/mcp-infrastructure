@@ -1,0 +1,22 @@
+{
+  "name": "feature-one-workflow",
+  "created": "2025-10-29T03:36:38.333Z",
+  "status": "active",
+  "tasks": [
+    {
+      "id": "1",
+      "description": "Task 1",
+      "status": "completed"
+    },
+    {
+      "id": "2",
+      "description": "Task 2",
+      "status": "in_progress"
+    },
+    {
+      "id": "3",
+      "description": "Task 3",
+      "status": "pending"
+    }
+  ]
+}

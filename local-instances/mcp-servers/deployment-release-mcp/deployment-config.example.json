@@ -1,0 +1,120 @@
+{
+  "dev": {
+    "processNames": ["node"],
+    "healthEndpoints": [
+      "http://localhost:3000/health",
+      "http://localhost:3000/api/status"
+    ],
+    "apiEndpoints": [
+      "http://localhost:3000/api/v1/users",
+      "http://localhost:3000/api/v1/deployments"
+    ],
+    "criticalWorkflows": [
+      "user-authentication",
+      "deployment-execution"
+    ],
+    "maxResponseTime": 1000,
+    "maxCpuUsage": 80,
+    "maxMemoryUsage": 85,
+    "databaseConnections": [
+      "postgresql://localhost:5432/dev_db"
+    ],
+    "migrationPaths": ["migrations", "db/migrations"],
+    "externalServices": [
+      "https://api.github.com",
+      "https://registry.npmjs.org"
+    ],
+    "apiIntegrations": [
+      {
+        "name": "GitHub API",
+        "endpoint": "https://api.github.com/status"
+      },
+      {
+        "name": "NPM Registry",
+        "endpoint": "https://registry.npmjs.org/-/ping"
+      }
+    ]
+  },
+  "staging": {
+    "processNames": ["node"],
+    "healthEndpoints": [
+      "https://staging.example.com/health"
+    ],
+    "apiEndpoints": [
+      "https://staging.example.com/api/v1/users"
+    ],
+    "criticalWorkflows": [
+      "user-authentication",
+      "deployment-execution",
+      "rollback-workflow"
+    ],
+    "maxResponseTime": 800,
+    "maxCpuUsage": 70,
+    "maxMemoryUsage": 80,
+    "databaseConnections": [
+      "postgresql://staging-db:5432/staging_db"
+    ],
+    "migrationPaths": ["migrations"],
+    "externalServices": [
+      "https://api.github.com"
+    ],
+    "apiIntegrations": [
+      {
+        "name": "GitHub API",
+        "endpoint": "https://api.github.com/status"
+      }
+    ]
+  },
+  "production": {
+    "processNames": ["node"],
+    "healthEndpoints": [
+      "https://api.example.com/health",
+      "https://api.example.com/api/status"
+    ],
+    "apiEndpoints": [
+      "https://api.example.com/api/v1/users",
+      "https://api.example.com/api/v1/deployments"
+    ],
+    "criticalWorkflows": [
+      "user-authentication",
+      "payment-processing",
+      "deployment-execution",
+      "rollback-workflow"
+    ],
+    "maxResponseTime": 500,
+    "maxCpuUsage": 60,
+    "maxMemoryUsage": 75,
+    "databaseConnections": [
+      "postgresql://prod-db-primary:5432/prod_db",
+      "postgresql://prod-db-replica:5432/prod_db"
+    ],
+    "migrationPaths": ["migrations"],
+    "externalServices": [
+      "https://api.github.com",
+      "https://api.stripe.com"
+    ],
+    "apiIntegrations": [
+      {
+        "name": "GitHub API",
+        "endpoint": "https://api.github.com/status"
+      },
+      {
+        "name": "Stripe API",
+        "endpoint": "https://api.stripe.com/healthcheck"
+      }
+    ]
+  },
+  "default": {
+    "processNames": ["node"],
+    "healthEndpoints": [],
+    "apiEndpoints": [],
+    "criticalWorkflows": [],
+    "maxResponseTime": 1000,
+    "maxCpuUsage": 80,
+    "maxMemoryUsage": 85,
+    "databaseConnections": [],
+    "migrationPaths": ["migrations"],
+    "externalServices": [],
+    "apiIntegrations": []
+  }
+}

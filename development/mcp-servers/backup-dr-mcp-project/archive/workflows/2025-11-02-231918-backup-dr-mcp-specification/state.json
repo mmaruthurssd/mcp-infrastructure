@@ -1,0 +1,137 @@
+{
+  "version": "1.0",
+  "workflowType": "task-executor",
+  "name": "backup-dr-mcp-specification",
+  "created": "2025-11-02T04:11:04.639Z",
+  "lastUpdated": "2025-11-02T04:19:18.264Z",
+  "currentPhase": "completion",
+  "currentStep": "task-execution",
+  "phases": {
+    "execution": {
+      "status": "complete",
+      "startedAt": "2025-11-02T04:11:04.639Z",
+      "completedAt": "2025-11-02T04:19:18.264Z",
+      "steps": []
+    }
+  },
+  "customData": {
+    "tasks": [
+      {
+        "id": "1",
+        "description": "Create PROJECT-BRIEF.md with problem statement, goals, and success criteria",
+        "status": "verified",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.25,
+        "startedAt": "2025-11-02T04:12:28.221Z",
+        "completedAt": "2025-11-02T04:12:28.221Z",
+        "notes": "PROJECT-BRIEF.md created with comprehensive problem statement, goals, success criteria, and constraints",
+        "verification": {
+          "status": "passed",
+          "evidence": [
+            "Task notes provided: PROJECT-BRIEF.md created with comprehensive problem statement, goals, success criteria, and constrai...",
+            "Task marked complete at 2025-11-02T04:12:28.221Z"
+          ],
+          "concerns": [],
+          "recommendations": []
+        },
+        "verifiedAt": "2025-11-02T04:12:28.221Z"
+      },
+      {
+        "id": "2",
+        "description": "Create SPECIFICATION.md with complete tool definitions (8 tools: create_backup, restore_backup, list_backups, verify_backup, schedule_backup, get_backup_status, cleanup_old_backups, export_backup_config)",
+        "status": "verified",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.5,
+        "startedAt": "2025-11-02T04:14:34.192Z",
+        "completedAt": "2025-11-02T04:14:34.192Z",
+        "notes": "SPECIFICATION.md created with 8 tool definitions, architecture, data structures, and integration points",
+        "verification": {
+          "status": "passed",
+          "evidence": [
+            "Task notes provided: SPECIFICATION.md created with 8 tool definitions, architecture, data structures, and integration poi...",
+            "Task marked complete at 2025-11-02T04:14:34.192Z"
+          ],
+          "concerns": [],
+          "recommendations": []
+        },
+        "verifiedAt": "2025-11-02T04:14:34.192Z"
+      },
+      {
+        "id": "3",
+        "description": "Create DESIGN-DECISIONS.md documenting backup strategy, storage format, and retention policies",
+        "status": "verified",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.25,
+        "startedAt": "2025-11-02T04:16:44.213Z",
+        "completedAt": "2025-11-02T04:16:44.213Z",
+        "notes": "DESIGN-DECISIONS.md created with 12 major design decisions covering backup strategy, storage format, compression, checksums, retention, scheduling, and error handling",
+        "verification": {
+          "status": "passed",
+          "evidence": [
+            "Task notes provided: DESIGN-DECISIONS.md created with 12 major design decisions covering backup strategy, storage format,...",
+            "Task marked complete at 2025-11-02T04:16:44.213Z"
+          ],
+          "concerns": [],
+          "recommendations": []
+        },
+        "verifiedAt": "2025-11-02T04:16:44.213Z"
+      },
+      {
+        "id": "4",
+        "description": "Create API-REFERENCE.md with tool schemas and examples",
+        "status": "verified",
+        "complexity": {
+          "score": 3,
+          "level": "simple",
+          "emoji": "🟡"
+        },
+        "estimatedHours": 0.25,
+        "startedAt": "2025-11-02T04:19:18.218Z",
+        "completedAt": "2025-11-02T04:19:18.218Z",
+        "notes": "API-REFERENCE.md created with comprehensive examples, error handling, complete workflows, and best practices for all 8 tools",
+        "verification": {
+          "status": "passed",
+          "evidence": [
+            "Task notes provided: API-REFERENCE.md created with comprehensive examples, error handling, complete workflows, and best p...",
+            "Task marked complete at 2025-11-02T04:19:18.218Z"
+          ],
+          "concerns": [],
+          "recommendations": []
+        },
+        "verifiedAt": "2025-11-02T04:19:18.218Z"
+      }
+    ],
+    "constraints": [],
+    "context": {
+      "category": "documentation",
+      "phiHandling": false,
+      "estimatedHours": 1.25
+    },
+    "documentation": {
+      "existing": [
+        "README.md"
+      ],
+      "needsUpdate": [],
+      "updated": []
+    },
+    "metadata": {
+      "totalTasks": 4,
+      "completedTasks": 4,
+      "verifiedTasks": 4,
+      "percentComplete": 100,
+      "lastUpdated": "2025-11-02T04:19:18.264Z"
+    }
+  }
+}

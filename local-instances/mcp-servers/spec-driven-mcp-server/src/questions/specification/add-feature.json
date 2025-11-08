@@ -1,0 +1,108 @@
+{
+  "step": "specification",
+  "scenario": "add-feature",
+  "questions": [
+    {
+      "id": "feature_name",
+      "type": "text",
+      "question": "What is the name of this new feature?",
+      "required": true,
+      "variable": "FEATURE_NAME"
+    },
+    {
+      "id": "problem_statement",
+      "type": "text",
+      "question": "What problem does this feature solve?",
+      "required": true,
+      "variable": "PROBLEM_STATEMENT"
+    },
+    {
+      "id": "proposed_solution",
+      "type": "text",
+      "question": "What is the high-level solution? (WHAT, not HOW)",
+      "required": true,
+      "variable": "PROPOSED_SOLUTION"
+    },
+    {
+      "id": "relates_to_existing_features",
+      "type": "text",
+      "question": "How does this feature relate to existing features?",
+      "hint": "e.g., 'Extends feature 001', 'Independent of existing features', 'Replaces deprecated feature'",
+      "required": true,
+      "variable": "RELATES_TO_EXISTING"
+    },
+    {
+      "id": "primary_users",
+      "type": "text",
+      "question": "Who are the primary users for this feature?",
+      "required": true,
+      "variable": "PRIMARY_USERS"
+    },
+    {
+      "id": "success_criteria",
+      "type": "text",
+      "question": "How will you measure success?",
+      "required": true,
+      "variable": "SUCCESS_CRITERIA"
+    },
+    {
+      "id": "user_stories_count",
+      "type": "number",
+      "question": "How many user stories for this feature?",
+      "default": 3,
+      "min": 1,
+      "max": 10,
+      "required": true,
+      "variable": "USER_STORIES_COUNT"
+    },
+    {
+      "id": "ui_requirements",
+      "type": "text",
+      "question": "UI requirements (or 'Consistent with existing UI')",
+      "required": false,
+      "variable": "UI_REQUIREMENTS"
+    },
+    {
+      "id": "data_requirements",
+      "type": "text",
+      "question": "What data will this feature work with?",
+      "required": true,
+      "variable": "DATA_REQUIREMENTS"
+    },
+    {
+      "id": "constraints",
+      "type": "text",
+      "question": "Specific constraints for this feature?",
+      "hint": "Beyond what's in the constitution",
+      "required": false,
+      "variable": "CONSTRAINTS"
+    }
+  ],
+  "follow_up_questions": {
+    "user_stories": {
+      "question_template": "Describe user story {{number}}:",
+      "fields": [
+        {
+          "id": "persona",
+          "question": "As a...",
+          "required": true
+        },
+        {
+          "id": "want",
+          "question": "I want...",
+          "required": true
+        },
+        {
+          "id": "benefit",
+          "question": "So that...",
+          "required": true
+        },
+        {
+          "id": "acceptance_criteria",
+          "question": "Acceptance criteria (separate with semicolons)",
+          "required": true
+        }
+      ]
+    }
+  }
+}

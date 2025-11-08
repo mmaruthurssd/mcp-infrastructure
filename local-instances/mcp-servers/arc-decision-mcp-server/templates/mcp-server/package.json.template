@@ -1,0 +1,27 @@
+{
+  "name": "{{MCP_SERVER_NAME}}",
+  "version": "1.0.0",
+  "description": "{{MCP_SERVER_DESCRIPTION}}",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "node dist/server.js",
+    "dev": "tsc --watch & node --watch dist/server.js",
+    "setup": "node install-agent.js"
+  },
+  "keywords": [
+    "mcp",
+    "{{KEYWORDS}}"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

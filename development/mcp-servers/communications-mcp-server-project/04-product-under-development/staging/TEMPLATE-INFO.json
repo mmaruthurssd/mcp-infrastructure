@@ -1,0 +1,97 @@
+{
+  "templateName": "communications-mcp-server-template",
+  "version": "1.0.0",
+  "templateType": "mcp-server",
+  "mcpServerName": "communications",
+  "status": "production-ready",
+  "description": "MCP server for email and Google Chat communications with approval workflow",
+  "author": "SSD Medical Practice",
+  "created": "2025-10-26",
+  "lastUpdated": "2025-10-26",
+
+  "features": [
+    "Email via SMTP (Gmail, Outlook, any provider)",
+    "Email via Gmail API with OAuth",
+    "Google Chat via API (OAuth required)",
+    "Google Chat via webhook (no auth needed)",
+    "Staging & approval workflow with web dashboard",
+    "Batch email approval",
+    "Priority levels and internal notes",
+    "Multiple account support"
+  ],
+
+  "toolsProvided": [
+    "send_email_smtp",
+    "send_email_gmail",
+    "send_google_chat_message",
+    "send_google_chat_webhook",
+    "stage_email",
+    "stage_chat_message",
+    "list_staged_emails",
+    "list_staged_messages",
+    "approve_email",
+    "reject_email",
+    "approve_message",
+    "batch_approve_emails",
+    "send_approved_emails",
+    "get_staging_stats"
+  ],
+
+  "prerequisites": {
+    "nodejs": ">=18.0.0",
+    "npm": ">=8.0.0",
+    "optional": {
+      "SMTP credentials": "For email sending (Gmail App Password recommended)",
+      "Google OAuth": "For Gmail API and Google Chat API (optional)",
+      "Google Chat webhook": "For simple chat integration (easiest method)"
+    }
+  },
+
+  "installation": {
+    "templateLocation": "templates-and-patterns/mcp-server-templates/templates/communications-mcp-server-template/",
+    "instanceLocation": "local-instances/mcp-servers/communications-mcp-server/",
+    "mcpConfigKey": "communications",
+    "requiresEnvVars": false,
+    "optionalEnvVars": [
+      "SMTP_HOST",
+      "SMTP_PORT",
+      "SMTP_USER",
+      "SMTP_PASSWORD",
+      "SMTP_FROM",
+      "GOOGLE_CLIENT_ID",
+      "GOOGLE_CLIENT_SECRET",
+      "GOOGLE_REFRESH_TOKEN",
+      "STAGING_ENABLED",
+      "STAGING_DB_PATH",
+      "REVIEW_SERVER_PORT"
+    ]
+  },
+
+  "uniqueFeatures": [
+    "Built-in web dashboard for email review (http://localhost:3001/review)",
+    "Human-in-the-loop approval workflow",
+    "Staging database for audit trail",
+    "Multiple communication methods (SMTP, OAuth, webhooks)",
+    "Review server runs separately from MCP server"
+  ],
+
+  "documentation": {
+    "readme": "README.md",
+    "setup": "SETUP.md",
+    "quickStart": "QUICK_START_STAGING.md",
+    "workflow": "STAGING_WORKFLOW.md"
+  },
+
+  "triggerKeywords": [
+    "email",
+    "gmail",
+    "smtp",
+    "google chat",
+    "webhook",
+    "communication",
+    "send message",
+    "staging",
+    "approval workflow",
+    "review emails"
+  ]
+}

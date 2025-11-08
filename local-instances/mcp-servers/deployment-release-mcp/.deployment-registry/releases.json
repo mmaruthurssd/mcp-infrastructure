@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "projectPath": "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/deployment-release-mcp",
+  "lastUpdated": "2025-10-31T04:18:09.094Z",
+  "releases": [
+    {
+      "releaseId": "release-test-release-v1-0-0-1761884284397-zwv31g",
+      "releaseName": "test-release-v1.0.0",
+      "environment": "staging",
+      "timestamp": "2025-10-31T04:18:04.397Z",
+      "status": "failed",
+      "services": [
+        "api-server",
+        "web-frontend"
+      ],
+      "deploymentOrder": [
+        "api-server",
+        "web-frontend"
+      ],
+      "serviceResults": [
+        {
+          "service": "api-server",
+          "status": "failed",
+          "deploymentId": "dep-1761884284398-fdpnma",
+          "version": "1.0.0",
+          "duration": 4695,
+          "healthStatus": "unhealthy"
+        }
+      ],
+      "duration": 4696,
+      "overallHealth": "unhealthy",
+      "releaseNotesPath": "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/deployment-release-mcp/.deployment-registry/release-notes/staging/test-release-v1-0-0-2025-10-31.md"
+    }
+  ]
+}

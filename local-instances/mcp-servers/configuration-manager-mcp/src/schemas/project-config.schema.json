@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Configuration Schema",
+  "description": "JSON schema for project configuration files",
+  "type": "object",
+  "required": ["name", "type"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Project name"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["software", "research", "business", "product"],
+      "description": "Project type"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Project version (semver)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Project description"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Project owner"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "archived", "planning", "on-hold"],
+      "description": "Project status"
+    },
+    "created": {
+      "type": "string",
+      "format": "date",
+      "description": "Project creation date"
+    }
+  },
+  "additionalProperties": true
+}

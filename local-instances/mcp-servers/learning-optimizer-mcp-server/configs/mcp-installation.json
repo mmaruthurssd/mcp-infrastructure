@@ -1,0 +1,51 @@
+{
+  "domain": "mcp-installation",
+  "displayName": "MCP Server Installation",
+  "description": "Troubleshooting optimization for MCP server template installations",
+  "knowledgeBaseFile": "Templates-for-tools-frameworks-mcp-servers/mcp-server-templates/TROUBLESHOOTING.md",
+  "preventiveCheckFile": "Templates-for-tools-frameworks-mcp-servers/mcp-server-templates/TROUBLESHOOTING.md",
+  "optimizationTriggers": {
+    "highImpactThreshold": 3,
+    "technicalDebtThreshold": 5,
+    "enableDuplicateDetection": true
+  },
+  "categories": [
+    {
+      "name": "Dependencies & Build",
+      "description": "npm, TypeScript, and build-related issues",
+      "keywords": ["npm", "typescript", "tsc", "build", "install", "module", "dependency", "package"],
+      "priority": 10
+    },
+    {
+      "name": "Network & Connectivity",
+      "description": "Network timeouts and registry issues",
+      "keywords": ["timeout", "network", "registry", "ENOTFOUND", "fetch", "connection", "econnrefused"],
+      "priority": 8
+    },
+    {
+      "name": "System Resources",
+      "description": "Disk space and memory issues",
+      "keywords": ["disk", "space", "memory", "ENOSPC", "resource", "quota"],
+      "priority": 7
+    },
+    {
+      "name": "Permissions & Access",
+      "description": "File and directory permission issues",
+      "keywords": ["permission", "EACCES", "denied", "chmod", "access", "ownership"],
+      "priority": 6
+    },
+    {
+      "name": "Configuration",
+      "description": "MCP configuration and environment variables",
+      "keywords": ["config", "env", "variable", "mcp.json", "configuration", "setting"],
+      "priority": 5
+    },
+    {
+      "name": "Template Issues",
+      "description": "Template structure and copying problems",
+      "keywords": ["template", "copy", "structure", "corrupt", "node_modules", "dist"],
+      "priority": 9
+    }
+  ],
+  "issueNumberPrefix": "AUTO-"
+}

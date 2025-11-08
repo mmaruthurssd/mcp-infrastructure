@@ -1,0 +1,132 @@
+{
+  "step": "planning",
+  "scenario": "existing-project",
+  "questions": [
+    {
+      "id": "technical_approach",
+      "type": "text",
+      "question": "How will you implement this feature within the existing architecture?",
+      "required": true,
+      "variable": "TECHNICAL_APPROACH"
+    },
+    {
+      "id": "reuse_existing_code",
+      "type": "text",
+      "question": "What existing code/modules will you reuse or extend?",
+      "hint": "List specific files, classes, or modules",
+      "required": true,
+      "variable": "REUSE_EXISTING_CODE"
+    },
+    {
+      "id": "new_dependencies",
+      "type": "text",
+      "question": "What new libraries or dependencies are needed (if any)?",
+      "hint": "Or 'None - using existing stack only'",
+      "required": true,
+      "variable": "NEW_DEPENDENCIES"
+    },
+    {
+      "id": "refactoring_needed",
+      "type": "boolean",
+      "question": "Does this feature require refactoring existing code?",
+      "default": false,
+      "required": true,
+      "variable": "REFACTORING_NEEDED"
+    },
+    {
+      "id": "refactoring_scope",
+      "type": "text",
+      "question": "Describe the refactoring scope and justification",
+      "condition": {
+        "field": "refactoring_needed",
+        "equals": true
+      },
+      "required": true,
+      "variable": "REFACTORING_SCOPE"
+    },
+    {
+      "id": "data_storage",
+      "type": "text",
+      "question": "How will data be stored (existing schema or new)?",
+      "required": true,
+      "variable": "DATA_STORAGE"
+    },
+    {
+      "id": "api_contracts_needed",
+      "type": "boolean",
+      "question": "Does this require new API endpoints or contracts?",
+      "default": false,
+      "required": true,
+      "variable": "API_CONTRACTS_NEEDED"
+    },
+    {
+      "id": "implementation_phases",
+      "type": "number",
+      "question": "How many implementation phases?",
+      "hint": "Each phase should be independently testable",
+      "default": 2,
+      "min": 1,
+      "max": 8,
+      "required": true,
+      "variable": "IMPLEMENTATION_PHASES"
+    },
+    {
+      "id": "testing_strategy",
+      "type": "text",
+      "question": "How will you test this feature without breaking existing functionality?",
+      "hint": "Feature flags? Separate test environment?",
+      "required": true,
+      "variable": "TESTING_STRATEGY"
+    },
+    {
+      "id": "rollout_strategy",
+      "type": "text",
+      "question": "How will you roll out this feature to users?",
+      "hint": "All at once, phased rollout, beta testing, etc.",
+      "required": true,
+      "variable": "ROLLOUT_STRATEGY"
+    },
+    {
+      "id": "rollback_plan",
+      "type": "text",
+      "question": "What's the rollback plan if issues are discovered?",
+      "required": true,
+      "variable": "ROLLBACK_PLAN"
+    },
+    {
+      "id": "key_risks",
+      "type": "text",
+      "question": "What are the key risks specific to adding this to existing code?",
+      "hint": "Breaking changes, performance degradation, data loss, etc.",
+      "required": false,
+      "variable": "KEY_RISKS"
+    }
+  ],
+  "follow_up_questions": {
+    "phases": {
+      "question_template": "Describe implementation phase {{number}}:",
+      "fields": [
+        {
+          "id": "phase_name",
+          "question": "Phase name:",
+          "required": true
+        },
+        {
+          "id": "phase_goal",
+          "question": "What is the goal of this phase?",
+          "required": true
+        },
+        {
+          "id": "deliverables",
+          "question": "What will be delivered? (separate with semicolons)",
+          "required": true
+        },
+        {
+          "id": "validation",
+          "question": "How will you validate this phase? (separate with semicolons)",
+          "required": true
+        }
+      ]
+    }
+  }
+}

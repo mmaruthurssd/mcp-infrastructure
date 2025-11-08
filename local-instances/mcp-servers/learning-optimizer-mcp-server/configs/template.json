@@ -1,0 +1,28 @@
+{
+  "_comment": "This is a template for creating new domain configurations",
+  "domain": "your-domain-name",
+  "displayName": "Human Readable Domain Name",
+  "description": "Description of what this domain covers",
+  "knowledgeBaseFile": "path/to/TROUBLESHOOTING.md",
+  "preventiveCheckFile": "path/to/PRE_FLIGHT_CHECKLIST.md",
+  "optimizationTriggers": {
+    "highImpactThreshold": 3,
+    "technicalDebtThreshold": 5,
+    "enableDuplicateDetection": true
+  },
+  "categories": [
+    {
+      "name": "Category Name 1",
+      "description": "What this category covers",
+      "keywords": ["keyword1", "keyword2", "keyword3"],
+      "priority": 10
+    },
+    {
+      "name": "Category Name 2",
+      "description": "What this category covers",
+      "keywords": ["keyword4", "keyword5"],
+      "priority": 9
+    }
+  ],
+  "issueNumberPrefix": ""
+}

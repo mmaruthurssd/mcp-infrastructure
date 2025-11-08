@@ -1,0 +1,1 @@
+{"version":3,"file":"drawio-xml-builder.d.ts","sourceRoot":"","sources":["../../src/utils/drawio-xml-builder.ts"],"names":[],"mappings":"AACA,qBAAa,gBAAgB;IAC3B,KAAK,CAAC,OAAO,CAAC,EAAE,GAAG;IAEnB,gBAAgB,CAAC,IAAI,EAAE,MAAM,GAAG,GAAG;IAInC,aAAa,CAAC,IAAI,EAAE,GAAG,EAAE,QAAQ,EAAE,GAAG,GAAG,GAAG;IAI5C,OAAO,CAAC,IAAI,EAAE,GAAG,GAAG,IAAI;CAGzB"}

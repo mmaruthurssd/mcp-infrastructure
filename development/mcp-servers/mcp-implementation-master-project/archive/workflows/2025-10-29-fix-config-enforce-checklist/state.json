@@ -1,0 +1,129 @@
+{
+  "version": "1.0",
+  "workflowType": "task-executor",
+  "name": "fix-config-enforce-checklist",
+  "created": "2025-10-29T20:24:20.525Z",
+  "lastUpdated": "2025-10-29T20:24:20.525Z",
+  "currentPhase": "execution",
+  "currentStep": "task-execution",
+  "phases": {
+    "execution": {
+      "status": "in-progress",
+      "startedAt": "2025-10-29T20:24:20.525Z",
+      "steps": []
+    }
+  },
+  "customData": {
+    "tasks": [
+      {
+        "id": "1",
+        "description": "Fix testing-validation-mcp configuration following checklist",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.25
+      },
+      {
+        "id": "2",
+        "description": "Verify ~/.claude.json has correct absolute paths",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.1
+      },
+      {
+        "id": "3",
+        "description": "Remove workspace .mcp.json entry for testing-validation",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.1
+      },
+      {
+        "id": "4",
+        "description": "Test configuration with Claude Code restart",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.15
+      },
+      {
+        "id": "5",
+        "description": "Create mandatory checklist integration in ROLLOUT-CHECKLIST.md",
+        "status": "pending",
+        "complexity": {
+          "score": 3,
+          "level": "simple",
+          "emoji": "🟡"
+        },
+        "estimatedHours": 0.25
+      },
+      {
+        "id": "6",
+        "description": "Update mcp-config-manager to enforce checklist compliance",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.5
+      },
+      {
+        "id": "7",
+        "description": "Create pre-deployment validation script that checks checklist items",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.5
+      },
+      {
+        "id": "8",
+        "description": "Document checklist enforcement in MCP-BUILD-INTEGRATION-GUIDE.md",
+        "status": "pending",
+        "complexity": {
+          "score": 3,
+          "level": "simple",
+          "emoji": "🟡"
+        },
+        "estimatedHours": 0.25
+      }
+    ],
+    "constraints": [],
+    "context": {
+      "category": "bug-fix",
+      "phiHandling": false,
+      "estimatedHours": 2.1
+    },
+    "documentation": {
+      "existing": [
+        "README.md"
+      ],
+      "needsUpdate": [],
+      "updated": []
+    },
+    "metadata": {
+      "totalTasks": 8,
+      "completedTasks": 0,
+      "verifiedTasks": 0,
+      "percentComplete": 0,
+      "lastUpdated": "2025-10-29T20:24:20.525Z"
+    }
+  },
+  "phase": "execution"
+}

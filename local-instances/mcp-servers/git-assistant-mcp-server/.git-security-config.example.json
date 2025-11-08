@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Security configuration for git-assistant MCP integration",
+
+  "enabled": true,
+  "scanCredentials": true,
+  "scanPHI": true,
+  "failOnSecurity": true,
+
+  "sensitivity": "medium",
+  "minConfidence": 0.5,
+
+  "excludeDirs": [
+    "node_modules",
+    ".git",
+    "dist",
+    "build",
+    "coverage",
+    ".vscode",
+    ".idea"
+  ],
+
+  "cacheTimeout": 30,
+
+  "integrations": {
+    "gitAssistant": true,
+    "preCommitHook": true
+  },
+
+  "notifications": {
+    "showScanTime": true,
+    "verboseOutput": false
+  },
+
+  "customPatterns": {
+    "credentials": [],
+    "phi": []
+  }
+}

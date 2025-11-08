@@ -1,0 +1,30 @@
+{
+  "name": "spec-driven-mcp-server",
+  "version": "0.2.0",
+  "description": "Interactive MCP server for guided Spec-Driven Development workflows",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "tsc --watch & node --watch dist/server.js",
+    "start": "node dist/server.js"
+  },
+  "keywords": [
+    "mcp",
+    "spec-driven-development",
+    "specification",
+    "ai-assisted-development",
+    "workflow"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "workflow-orchestrator-mcp-server": "file:../workflow-orchestrator-mcp-server"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

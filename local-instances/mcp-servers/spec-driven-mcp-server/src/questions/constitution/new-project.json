@@ -1,0 +1,143 @@
+{
+  "step": "constitution",
+  "scenario": "new-project",
+  "questions": [
+    {
+      "id": "project_name",
+      "type": "text",
+      "question": "What is the name of this project?",
+      "hint": "This will be used in the constitution title and documentation",
+      "required": true,
+      "variable": "PROJECT_NAME"
+    },
+    {
+      "id": "project_type",
+      "type": "single_select",
+      "question": "What type of project is this?",
+      "options": [
+        {"value": "google-sheets", "label": "Google Sheets Tool/Dashboard"},
+        {"value": "mcp-server", "label": "MCP Server"},
+        {"value": "web-app", "label": "Web Application"},
+        {"value": "api", "label": "API/Backend Service"},
+        {"value": "tool", "label": "Command-line Tool"},
+        {"value": "framework", "label": "Framework/Library"},
+        {"value": "other", "label": "Other"}
+      ],
+      "required": true,
+      "variable": "PROJECT_TYPE"
+    },
+    {
+      "id": "phi_handling",
+      "type": "boolean",
+      "question": "Will this project access, store, or transmit Protected Health Information (PHI)?",
+      "hint": "This determines if HIPAA compliance requirements are needed",
+      "default": false,
+      "required": true,
+      "variable": "PHI_HANDLING",
+      "impact": "Adds PHI protection and HIPAA compliance sections to constitution"
+    },
+    {
+      "id": "hipaa_compliance",
+      "type": "boolean",
+      "question": "Does this project require full HIPAA compliance?",
+      "hint": "Includes BAAs, audit trails, encryption standards, etc.",
+      "condition": {
+        "field": "phi_handling",
+        "equals": true
+      },
+      "default": true,
+      "required": true,
+      "variable": "HIPAA_COMPLIANCE"
+    },
+    {
+      "id": "testing_requirements",
+      "type": "multi_select",
+      "question": "What levels of testing are required for this project?",
+      "options": [
+        {"value": "unit", "label": "Unit Tests (test individual functions)", "default": true},
+        {"value": "integration", "label": "Integration Tests (test component interactions)", "default": true},
+        {"value": "e2e", "label": "End-to-End Tests (test complete workflows)", "default": false},
+        {"value": "manual", "label": "Manual Testing Checklists", "default": false},
+        {"value": "compliance", "label": "Compliance/Security Tests", "default": false}
+      ],
+      "required": true,
+      "variable": "TESTING_REQUIREMENTS"
+    },
+    {
+      "id": "test_first_mandatory",
+      "type": "boolean",
+      "question": "Is Test-First Development (TDD) mandatory for this project?",
+      "hint": "If yes, all code must have tests written before implementation",
+      "default": true,
+      "required": true,
+      "variable": "TEST_FIRST_MANDATORY"
+    },
+    {
+      "id": "tech_stack",
+      "type": "text",
+      "question": "What is the primary technology stack?",
+      "hint": "e.g., 'TypeScript + Node.js', 'Google Apps Script', 'Python + Flask', etc.",
+      "required": true,
+      "variable": "TECH_STACK"
+    },
+    {
+      "id": "code_quality_standards",
+      "type": "multi_select",
+      "question": "What code quality standards should be enforced?",
+      "options": [
+        {"value": "linting", "label": "Linting (ESLint, Pylint, etc.)", "default": true},
+        {"value": "formatting", "label": "Code Formatting (Prettier, Black, etc.)", "default": true},
+        {"value": "type_checking", "label": "Type Checking (TypeScript, mypy, etc.)", "default": true},
+        {"value": "code_review", "label": "Mandatory Code Review", "default": true},
+        {"value": "documentation", "label": "Documentation Standards", "default": true}
+      ],
+      "required": true,
+      "variable": "CODE_QUALITY_STANDARDS"
+    },
+    {
+      "id": "simplicity_principle",
+      "type": "boolean",
+      "question": "Should the project follow a simplicity-first principle (start simple, add complexity only when needed)?",
+      "hint": "Prevents over-engineering and premature optimization",
+      "default": true,
+      "required": true,
+      "variable": "SIMPLICITY_PRINCIPLE"
+    },
+    {
+      "id": "integration_requirements",
+      "type": "text",
+      "question": "What external systems or services will this project integrate with?",
+      "hint": "e.g., 'Google Sheets API', 'Stripe', 'SendGrid', 'None', etc.",
+      "required": false,
+      "variable": "INTEGRATION_REQUIREMENTS"
+    },
+    {
+      "id": "deployment_environment",
+      "type": "single_select",
+      "question": "Where will this project be deployed?",
+      "options": [
+        {"value": "google-apps-script", "label": "Google Apps Script"},
+        {"value": "cloud-function", "label": "Cloud Functions (AWS Lambda, Google Cloud Functions)"},
+        {"value": "server", "label": "Traditional Server/VM"},
+        {"value": "container", "label": "Docker/Kubernetes"},
+        {"value": "local", "label": "Local Machine Only"},
+        {"value": "other", "label": "Other"}
+      ],
+      "required": true,
+      "variable": "DEPLOYMENT_ENVIRONMENT"
+    },
+    {
+      "id": "session_timeout",
+      "type": "number",
+      "question": "If applicable, what should the session timeout be (in minutes)?",
+      "hint": "For HIPAA compliance, typically 15-30 minutes",
+      "condition": {
+        "field": "hipaa_compliance",
+        "equals": true
+      },
+      "default": 15,
+      "required": false,
+      "variable": "SESSION_TIMEOUT"
+    }
+  ]
+}

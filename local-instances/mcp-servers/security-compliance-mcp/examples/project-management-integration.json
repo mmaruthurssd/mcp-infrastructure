@@ -1,0 +1,464 @@
+{
+  "integration": "project-management-mcp",
+  "version": "1.0.0",
+  "description": "Security integration configuration for Project Management MCP server",
+
+  "goal_templates": {
+    "api_integration": {
+      "name": "API Integration Goal Template",
+      "description": "Template for goals involving third-party API integrations",
+      "security_checkpoints": [
+        {
+          "phase": "before_implementation",
+          "name": "security_requirements_review",
+          "mcp_server": "security-compliance-mcp",
+          "actions": [
+            {
+              "description": "Verify secrets management setup",
+              "tool": "manage_secrets",
+              "params": {
+                "action": "status"
+              }
+            }
+          ]
+        },
+        {
+          "phase": "during_implementation",
+          "name": "credential_scanning",
+          "mcp_server": "security-compliance-mcp",
+          "trigger": "after_file_creation",
+          "actions": [
+            {
+              "description": "Scan new files for exposed credentials",
+              "tool": "scan_for_credentials",
+              "params": {
+                "mode": "file",
+                "minConfidence": 0.8
+              },
+              "on_violation": "block"
+            }
+          ]
+        },
+        {
+          "phase": "before_completion",
+          "name": "final_security_audit",
+          "mcp_server": "security-compliance-mcp",
+          "required": true,
+          "actions": [
+            {
+              "description": "Full credential scan of integration code",
+              "tool": "scan_for_credentials",
+              "params": {
+                "mode": "directory",
+                "target": "${goal_directory}",
+                "minConfidence": 0.5
+              },
+              "on_violation": "block"
+            }
+          ]
+        }
+      ]
+    },
+
+    "patient_data_feature": {
+      "name": "Patient Data Feature Template",
+      "description": "Template for goals handling patient data or PHI",
+      "security_level": "critical",
+      "security_checkpoints": [
+        {
+          "phase": "before_implementation",
+          "name": "phi_requirements_review",
+          "mcp_server": "security-compliance-mcp",
+          "manual": true,
+          "checklist": [
+            "Review HIPAA compliance requirements",
+            "Identify all PHI data points",
+            "Plan de-identification strategy",
+            "Review audit logging requirements"
+          ]
+        },
+        {
+          "phase": "during_implementation",
+          "name": "continuous_phi_scanning",
+          "mcp_server": "security-compliance-mcp",
+          "trigger": "after_file_modification",
+          "actions": [
+            {
+              "description": "Scan for PHI exposure with high sensitivity",
+              "tool": "scan_for_phi",
+              "params": {
+                "mode": "file",
+                "sensitivity": "high",
+                "categories": ["identifier", "demographic", "medical", "financial"]
+              },
+              "on_violation": "block"
+            }
+          ]
+        },
+        {
+          "phase": "testing",
+          "name": "test_data_phi_check",
+          "mcp_server": "security-compliance-mcp",
+          "actions": [
+            {
+              "description": "Ensure test fixtures don't contain real PHI",
+              "tool": "scan_for_phi",
+              "params": {
+                "mode": "directory",
+                "target": "./tests",
+                "sensitivity": "high"
+              },
+              "on_violation": "warn"
+            }
+          ]
+        },
+        {
+          "phase": "before_completion",
+          "name": "hipaa_compliance_audit",
+          "mcp_server": "security-compliance-mcp",
+          "required": true,
+          "actions": [
+            {
+              "description": "Comprehensive PHI scan",
+              "tool": "scan_for_phi",
+              "params": {
+                "mode": "directory",
+                "target": "${goal_directory}",
+                "sensitivity": "high"
+              },
+              "on_violation": "block"
+            },
+            {
+              "description": "Verify audit logging is enabled",
+              "manual": true,
+              "checklist": [
+                "Review audit log events for PHI access",
+                "Verify 6-year retention is configured",
+                "Check tamper-evident chain integrity"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    "authentication_feature": {
+      "name": "Authentication Feature Template",
+      "description": "Template for authentication/authorization features",
+      "security_level": "high",
+      "security_checkpoints": [
+        {
+          "phase": "during_implementation",
+          "name": "credential_protection",
+          "mcp_server": "security-compliance-mcp",
+          "actions": [
+            {
+              "description": "Scan for hardcoded credentials",
+              "tool": "scan_for_credentials",
+              "params": {
+                "mode": "file",
+                "minConfidence": 0.7
+              },
+              "on_violation": "block"
+            }
+          ]
+        },
+        {
+          "phase": "before_completion",
+          "name": "secrets_management_setup",
+          "mcp_server": "security-compliance-mcp",
+          "actions": [
+            {
+              "description": "Verify all secrets are encrypted",
+              "tool": "manage_secrets",
+              "params": {
+                "action": "status"
+              },
+              "alert_on": ["expired", "expiring"]
+            }
+          ]
+        }
+      ]
+    },
+
+    "database_integration": {
+      "name": "Database Integration Template",
+      "description": "Template for database connection and migration features",
+      "security_level": "high",
+      "security_checkpoints": [
+        {
+          "phase": "during_implementation",
+          "name": "connection_string_security",
+          "mcp_server": "security-compliance-mcp",
+          "actions": [
+            {
+              "description": "Scan for exposed database credentials",
+              "tool": "scan_for_credentials",
+              "params": {
+                "mode": "file",
+                "minConfidence": 0.9
+              },
+              "on_violation": "block"
+            }
+          ]
+        }
+      ]
+    }
+  },
+
+  "task_completion_checks": {
+    "file_creation": {
+      "trigger": "after_task_creates_files",
+      "security_actions": [
+        {
+          "mcp_server": "security-compliance-mcp",
+          "tool": "scan_for_credentials",
+          "params": {
+            "mode": "file",
+            "target": "${created_files}"
+          },
+          "condition": "file_extension in ['.ts', '.js', '.json', '.env', '.config.js']"
+        }
+      ]
+    },
+
+    "task_completion": {
+      "trigger": "before_marking_task_complete",
+      "security_actions": [
+        {
+          "description": "Scan modified files for security issues",
+          "mcp_server": "security-compliance-mcp",
+          "tool": "scan_for_credentials",
+          "params": {
+            "mode": "file",
+            "target": "${task_modified_files}"
+          },
+          "required": true
+        }
+      ]
+    }
+  },
+
+  "workflow_integration": {
+    "spec_driven_to_security": {
+      "description": "After spec-driven creates specification, check for security requirements",
+      "trigger": "spec_created",
+      "actions": [
+        {
+          "description": "Identify if spec mentions credentials or PHI",
+          "mcp_server": "security-compliance-mcp",
+          "manual_review": [
+            "Does specification handle API keys or credentials?",
+            "Does specification involve patient data or PHI?",
+            "What security level is required for this feature?"
+          ]
+        }
+      ]
+    },
+
+    "task_executor_to_security": {
+      "description": "After task-executor completes tasks, run security validation",
+      "trigger": "workflow_completed",
+      "actions": [
+        {
+          "description": "Final security scan of all workflow changes",
+          "mcp_server": "security-compliance-mcp",
+          "parallel": [
+            {
+              "tool": "scan_for_credentials",
+              "params": {
+                "mode": "directory",
+                "target": "${workflow_directory}"
+              }
+            },
+            {
+              "tool": "scan_for_phi",
+              "params": {
+                "mode": "directory",
+                "target": "${workflow_directory}",
+                "sensitivity": "medium"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+
+  "deployment_gates": {
+    "pre_deployment": {
+      "description": "Security gates that must pass before deployment",
+      "required": true,
+      "gates": [
+        {
+          "name": "no_exposed_credentials",
+          "mcp_server": "security-compliance-mcp",
+          "tool": "scan_for_credentials",
+          "params": {
+            "mode": "directory",
+            "target": ".",
+            "exclude": ["node_modules", "build", "dist", "tests/fixtures"]
+          },
+          "pass_condition": "violations == 0",
+          "on_fail": "block_deployment"
+        },
+        {
+          "name": "no_phi_in_code",
+          "mcp_server": "security-compliance-mcp",
+          "tool": "scan_for_phi",
+          "params": {
+            "mode": "directory",
+            "target": ".",
+            "sensitivity": "high",
+            "exclude": ["node_modules", "build", "dist", "tests/fixtures"]
+          },
+          "pass_condition": "violations == 0",
+          "on_fail": "block_deployment"
+        },
+        {
+          "name": "secrets_rotation_current",
+          "mcp_server": "security-compliance-mcp",
+          "tool": "manage_secrets",
+          "params": {
+            "action": "status"
+          },
+          "pass_condition": "expired_secrets == 0",
+          "on_fail": "warn"
+        }
+      ]
+    }
+  },
+
+  "scheduled_security_checks": {
+    "daily": [
+      {
+        "name": "check_secret_rotation",
+        "schedule": "0 9 * * *",
+        "mcp_server": "security-compliance-mcp",
+        "tool": "manage_secrets",
+        "params": {
+          "action": "status"
+        },
+        "alert_on": ["expiring", "expired"]
+      }
+    ],
+
+    "weekly": [
+      {
+        "name": "full_codebase_scan",
+        "schedule": "0 0 * * 1",
+        "mcp_server": "security-compliance-mcp",
+        "actions": [
+          {
+            "tool": "scan_for_credentials",
+            "params": {
+              "mode": "directory",
+              "target": "./src"
+            }
+          },
+          {
+            "tool": "scan_for_phi",
+            "params": {
+              "mode": "directory",
+              "target": "./src",
+              "sensitivity": "medium"
+            }
+          }
+        ],
+        "create_report": true
+      }
+    ],
+
+    "monthly": [
+      {
+        "name": "compliance_audit",
+        "schedule": "0 0 1 * *",
+        "description": "Monthly HIPAA compliance audit",
+        "actions": [
+          {
+            "description": "Review audit log for PHI access",
+            "manual": true,
+            "checklist": [
+              "Review all PHI access events",
+              "Verify audit log chain integrity",
+              "Export compliance report",
+              "Review secret rotation compliance"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  "notification_rules": {
+    "critical_violations": {
+      "enabled": true,
+      "trigger": "security_violation_detected",
+      "severity": ["critical", "high"],
+      "actions": [
+        {
+          "log_to_audit": true
+        },
+        {
+          "update_goal_status": {
+            "status": "blocked",
+            "reason": "Security violation detected"
+          }
+        }
+      ]
+    },
+
+    "phi_detected": {
+      "enabled": true,
+      "trigger": "phi_found_in_code",
+      "actions": [
+        {
+          "log_to_audit": true,
+          "phi_accessed": true
+        },
+        {
+          "update_goal_status": {
+            "status": "blocked",
+            "reason": "PHI detected - HIPAA violation risk"
+          }
+        }
+      ]
+    },
+
+    "secret_rotation_needed": {
+      "enabled": true,
+      "trigger": "secret_expiring_or_expired",
+      "actions": [
+        {
+          "create_task": {
+            "title": "Rotate expired secret: ${secret_key}",
+            "priority": "high",
+            "description": "Secret needs rotation for security compliance"
+          }
+        }
+      ]
+    }
+  },
+
+  "examples": {
+    "goal_with_security": {
+      "goal_name": "Build patient portal authentication",
+      "template": "authentication_feature",
+      "security_level": "high",
+      "checkpoints": "automatic",
+      "description": "Security checkpoints will be automatically added from template"
+    },
+
+    "manual_security_trigger": {
+      "description": "How to manually trigger security scan from project management",
+      "command": {
+        "mcp_server": "security-compliance-mcp",
+        "tool": "scan_for_credentials",
+        "params": {
+          "mode": "directory",
+          "target": "./src/auth"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"metrics-collector.d.ts","sourceRoot":"","sources":["../../src/lib/metrics-collector.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAEH,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,mBAAmB,CAAC;AAE3D,qBAAa,gBAAgB;IAC3B;;OAEG;IACH,cAAc,CAAC,MAAM,EAAE,OAAO,CAAC,iBAAiB,CAAC,GAAG,iBAAiB;IAerE;;OAEG;IACH,eAAe,CAAC,SAAS,EAAE,MAAM,GAAG,MAAM;CAG3C"}

@@ -1,0 +1,50 @@
+{
+  "domain": "google-sheets",
+  "displayName": "Google Sheets Automation",
+  "description": "Troubleshooting optimization for Google Sheets Apps Script automation",
+  "knowledgeBaseFile": "google-sheets-automation/SHEETS_TROUBLESHOOTING.md",
+  "preventiveCheckFile": "google-sheets-automation/PRE_AUTOMATION_CHECKLIST.md",
+  "optimizationTriggers": {
+    "highImpactThreshold": 3,
+    "technicalDebtThreshold": 5,
+    "enableDuplicateDetection": true
+  },
+  "categories": [
+    {
+      "name": "Formula Errors",
+      "description": "Spreadsheet formula and reference issues",
+      "keywords": ["#REF!", "#VALUE!", "#N/A", "#DIV/0!", "formula", "arrayformula", "vlookup", "indirect"],
+      "priority": 10
+    },
+    {
+      "name": "Script Failures",
+      "description": "Apps Script execution errors",
+      "keywords": ["timeout", "quota", "execution", "script", "runtime", "exceeded"],
+      "priority": 9
+    },
+    {
+      "name": "Authorization",
+      "description": "Permission and authorization issues",
+      "keywords": ["authorization", "permission", "access", "oauth", "scopes", "denied"],
+      "priority": 8
+    },
+    {
+      "name": "Data Validation",
+      "description": "Data validation and constraint errors",
+      "keywords": ["validation", "constraint", "duplicate", "unique", "required", "invalid"],
+      "priority": 7
+    },
+    {
+      "name": "API Limits",
+      "description": "API quota and rate limiting issues",
+      "keywords": ["quota", "limit", "rate", "exceeded", "throttle", "429"],
+      "priority": 8
+    },
+    {
+      "name": "Sheet Structure",
+      "description": "Sheet copying and structure issues",
+      "keywords": ["copy", "structure", "range", "sheet", "tab", "protected"],
+      "priority": 6
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "name": "security-compliance-mcp",
+  "version": "1.0.0",
+  "description": "Security & Compliance MCP server for credential detection, PHI protection, and HIPAA compliance",
+  "main": "dist/server.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "node dist/server.js"
+  },
+  "keywords": [
+    "mcp",
+    "security",
+    "compliance",
+    "hipaa",
+    "credential-detection",
+    "phi-protection"
+  ],
+  "author": "Medical Practice Workspace",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "@types/jest": "^29.5.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0"
+  }
+}
