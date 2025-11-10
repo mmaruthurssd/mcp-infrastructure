@@ -10,6 +10,7 @@ import {
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 import { StagingDatabase } from './staging-db.js';
+import { GoogleSheetsLogger, createGoogleSheetsLogger } from './google-sheets-logger.js';
 
 interface GmailCredentials {
   clientId: string;
@@ -24,6 +25,7 @@ class CommunicationsServer {
   private chat: any;
   private stagingDb: StagingDatabase;
   private stagingEnabled: boolean;
+  private sheetsLogger: GoogleSheetsLogger | null = null;
 
   constructor() {
     this.server = new Server(
@@ -48,6 +50,31 @@ class CommunicationsServer {
 
   async initialize() {
     await this.stagingDb.initialize();
+
+    // Initialize Google Sheets logger if enabled
+    if (process.env.GOOGLE_SHEETS_LOGGING_ENABLED === 'true') {
+      try {
+        // Use the same OAuth2 client for Sheets logging
+        if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REFRESH_TOKEN) {
+          const oauth2Client = new google.auth.OAuth2(
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET,
+            'urn:ietf:wg:oauth:2.0:oob'
+          );
+
+          oauth2Client.setCredentials({
+            refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+          });
+
+          this.sheetsLogger = createGoogleSheetsLogger(oauth2Client);
+          console.error('✓ Google Sheets logging enabled');
+        } else {
+          console.error('⚠ Google Sheets logging enabled but credentials missing');
+        }
+      } catch (error: any) {
+        console.error('✗ Failed to initialize Google Sheets logger:', error.message);
+      }
+    }
   }
 
   private initializeGoogleAPIs() {
@@ -382,6 +409,30 @@ class CommunicationsServer {
       },
     });
 
+    // Log to Google Sheets
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.logCommunication({
+          timestamp: new Date(),
+          operationId: `email-${Date.now()}`,
+          type: 'email',
+          direction: 'sent',
+          status: 'sent',
+          aiSystem: 'claude',
+          from: process.env.SMTP_FROM || process.env.SMTP_USER || 'me',
+          to,
+          subject,
+          bodyPreview: body.substring(0, 200) + (body.length > 200 ? '...' : ''),
+          channel: 'gmail-api',
+          priority: 'normal',
+          phiFlag: false,
+          sentAt: new Date(),
+        });
+      } catch (error: any) {
+        console.error('Failed to log to Google Sheets:', error.message);
+      }
+    }
+
     return {
       content: [
         {
@@ -416,6 +467,30 @@ class CommunicationsServer {
 
     const info = await transporter.sendMail(mailOptions);
 
+    // Log to Google Sheets
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.logCommunication({
+          timestamp: new Date(),
+          operationId: `email-${Date.now()}`,
+          type: 'email',
+          direction: 'sent',
+          status: 'sent',
+          aiSystem: 'claude',
+          from: mailOptions.from as string,
+          to,
+          subject,
+          bodyPreview: body.substring(0, 200) + (body.length > 200 ? '...' : ''),
+          channel: 'smtp',
+          priority: 'normal',
+          phiFlag: false,
+          sentAt: new Date(),
+        });
+      } catch (error: any) {
+        console.error('Failed to log to Google Sheets:', error.message);
+      }
+    }
+
     return {
       content: [
         {
@@ -446,6 +521,30 @@ class CommunicationsServer {
       requestBody,
     });
 
+    // Log to Google Sheets
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.logCommunication({
+          timestamp: new Date(),
+          operationId: `chat-${Date.now()}`,
+          type: 'chat',
+          direction: 'sent',
+          status: 'sent',
+          aiSystem: 'claude',
+          from: 'bot',
+          to: space,
+          subject: thread ? `Thread: ${thread}` : 'New message',
+          bodyPreview: message.substring(0, 200) + (message.length > 200 ? '...' : ''),
+          channel: 'google-chat-api',
+          priority: 'normal',
+          phiFlag: false,
+          sentAt: new Date(),
+        });
+      } catch (error: any) {
+        console.error('Failed to log to Google Sheets:', error.message);
+      }
+    }
+
     return {
       content: [
         {
@@ -471,6 +570,30 @@ class CommunicationsServer {
 
     if (!response.ok) {
       throw new Error(`Webhook request failed: ${response.statusText}`);
+    }
+
+    // Log to Google Sheets
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.logCommunication({
+          timestamp: new Date(),
+          operationId: `chat-${Date.now()}`,
+          type: 'chat',
+          direction: 'sent',
+          status: 'sent',
+          aiSystem: 'claude',
+          from: 'bot',
+          to: webhookUrl.substring(0, 50) + '...',
+          subject: 'Webhook message',
+          bodyPreview: message.substring(0, 200) + (message.length > 200 ? '...' : ''),
+          channel: 'google-chat-webhook',
+          priority: 'normal',
+          phiFlag: false,
+          sentAt: new Date(),
+        });
+      } catch (error: any) {
+        console.error('Failed to log to Google Sheets:', error.message);
+      }
     }
 
     return {
@@ -500,6 +623,31 @@ class CommunicationsServer {
       requestedBy: 'Claude Code',
     });
 
+    // Log to Google Sheets Staged-Communications
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.logCommunication({
+          timestamp: new Date(),
+          operationId: id,
+          type: 'email',
+          direction: 'sent',
+          status: 'staged',
+          aiSystem: 'claude',
+          from: from || process.env.SMTP_FROM || process.env.SMTP_USER || 'unknown',
+          to,
+          subject,
+          bodyPreview: body.substring(0, 200) + (body.length > 200 ? '...' : ''),
+          channel: 'staged',
+          priority: priority as any,
+          phiFlag: false,
+          stagedBy: 'Claude Code',
+          stagedAt: new Date(),
+        });
+      } catch (error: any) {
+        console.error('Failed to log to Google Sheets:', error.message);
+      }
+    }
+
     return {
       content: [
         {
@@ -520,6 +668,31 @@ class CommunicationsServer {
       notes,
       requestedBy: 'Claude Code',
     });
+
+    // Log to Google Sheets Staged-Communications
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.logCommunication({
+          timestamp: new Date(),
+          operationId: id,
+          type: 'chat',
+          direction: 'sent',
+          status: 'staged',
+          aiSystem: 'claude',
+          from: 'bot',
+          to: destination,
+          subject: `${type} message`,
+          bodyPreview: message.substring(0, 200) + (message.length > 200 ? '...' : ''),
+          channel: type,
+          priority: 'normal',
+          phiFlag: false,
+          stagedBy: 'Claude Code',
+          stagedAt: new Date(),
+        });
+      } catch (error: any) {
+        console.error('Failed to log to Google Sheets:', error.message);
+      }
+    }
 
     return {
       content: [
@@ -590,6 +763,15 @@ class CommunicationsServer {
     const { id, approvedBy } = args;
     await this.stagingDb.approveEmail(id, approvedBy);
 
+    // Update Google Sheets status to approved
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.approveCommunication(id, approvedBy);
+      } catch (error: any) {
+        console.error('Failed to update Google Sheets:', error.message);
+      }
+    }
+
     return {
       content: [
         {
@@ -604,6 +786,15 @@ class CommunicationsServer {
     const { id, rejectedBy } = args;
     await this.stagingDb.rejectEmail(id, rejectedBy);
 
+    // Update Google Sheets status to failed
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.rejectCommunication(id, `Rejected by ${rejectedBy}`);
+      } catch (error: any) {
+        console.error('Failed to update Google Sheets:', error.message);
+      }
+    }
+
     return {
       content: [{ type: 'text', text: `✓ Email ${id.slice(0, 8)} rejected by ${rejectedBy}.` }],
     };
@@ -612,6 +803,15 @@ class CommunicationsServer {
   private async approveMessage(args: any) {
     const { id, approvedBy } = args;
     await this.stagingDb.approveMessage(id, approvedBy);
+
+    // Update Google Sheets status to approved
+    if (this.sheetsLogger) {
+      try {
+        await this.sheetsLogger.approveCommunication(id, approvedBy);
+      } catch (error: any) {
+        console.error('Failed to update Google Sheets:', error.message);
+      }
+    }
 
     return {
       content: [{ type: 'text', text: `✓ Message ${id.slice(0, 8)} approved by ${approvedBy}!` }],
@@ -647,8 +847,31 @@ class CommunicationsServer {
         // Send via SMTP (you can add logic to choose Gmail API vs SMTP)
         await this.sendSMTPEmailDirect(email);
         await this.stagingDb.markEmailSent(email.id);
+
+        // Update Google Sheets status to sent
+        if (this.sheetsLogger) {
+          try {
+            await this.sheetsLogger.updateCommunicationStatus(email.id, 'sent', {
+              sentAt: new Date(),
+            });
+          } catch (error: any) {
+            console.error('Failed to update Google Sheets:', error.message);
+          }
+        }
+
         results.push(`✓ Sent: ${email.to} - ${email.subject}`);
       } catch (error: any) {
+        // Update Google Sheets status to failed
+        if (this.sheetsLogger) {
+          try {
+            await this.sheetsLogger.updateCommunicationStatus(email.id, 'failed', {
+              errorMessage: error.message,
+            });
+          } catch (sheetsError: any) {
+            console.error('Failed to update Google Sheets:', sheetsError.message);
+          }
+        }
+
         results.push(`✗ Failed: ${email.to} - ${error.message}`);
       }
     }

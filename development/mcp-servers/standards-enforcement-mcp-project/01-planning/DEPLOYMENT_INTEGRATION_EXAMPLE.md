@@ -81,7 +81,7 @@ async function callMcpTool(
   return new Promise((resolve, reject) => {
     const mcpPath = path.join(
       process.env.HOME,
-      'Desktop/medical-practice-workspace/local-instances/mcp-servers',
+      'Desktop/operations-workspace/local-instances/mcp-servers',
       serverName,
       'dist/index.js'
     );

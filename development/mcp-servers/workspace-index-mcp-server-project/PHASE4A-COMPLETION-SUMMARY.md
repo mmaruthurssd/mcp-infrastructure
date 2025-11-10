@@ -175,7 +175,7 @@ confidence =
 ```
 Phase 4: Workspace adapter and health analyzer initialized
 Workspace Index MCP server running on stdio
-Project root: /Users/mmaruthurnew/Desktop/medical-practice-workspace
+Project root: /Users/mmaruthurnew/Desktop/operations-workspace
 ```
 
 ---
@@ -206,7 +206,7 @@ Project root: /Users/mmaruthurnew/Desktop/medical-practice-workspace
       "/Users/.../local-instances/mcp-servers/workspace-index/dist/server.js"
     ],
     "env": {
-      "WORKSPACE_INDEX_PROJECT_ROOT": "/Users/.../medical-practice-workspace"
+      "WORKSPACE_INDEX_PROJECT_ROOT": "/Users/.../operations-workspace"
     }
   }
 }

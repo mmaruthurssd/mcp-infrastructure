@@ -69,7 +69,7 @@ This guide documents the proper configuration for each MCP server, including:
 "arc-decision": {
   "command": "node",
   "args": [
-    "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/arc-decision-mcp-server/dist/server.js"
+    "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/arc-decision-mcp-server/dist/server.js"
   ],
   "env": {
     "ARC_DECISION_PROJECT_ROOT": "${workspaceFolder}",
@@ -333,7 +333,7 @@ This guide documents the proper configuration for each MCP server, including:
 **❌ Bad (hardcoded):**
 ```json
 "args": [
-  "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/..."
+  "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/..."
 ]
 ```
 

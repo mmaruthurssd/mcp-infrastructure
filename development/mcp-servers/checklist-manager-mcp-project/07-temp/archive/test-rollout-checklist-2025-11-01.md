@@ -8,7 +8,7 @@ notes: "Testing archive functionality - checklist-manager MCP production testing
 ---
 
 **ARCHIVED**: This checklist was archived on 2025-11-01 with outcome: completed
-**Original Path**: /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/checklist-manager-mcp-project/07-temp/test-rollout-checklist.md
+**Original Path**: /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/checklist-manager-mcp-project/07-temp/test-rollout-checklist.md
 **Final Completion**: 13%
 **Duration**: 0 days
 **Notes**: Testing archive functionality - checklist-manager MCP production testing complete

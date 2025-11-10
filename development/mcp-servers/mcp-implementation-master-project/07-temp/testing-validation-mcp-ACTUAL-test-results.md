@@ -85,10 +85,10 @@ Ran all test suites.
   "testing-validation": {
     "command": "node",
     "args": [
-      "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/testing-validation-mcp-server/dist/server.js"
+      "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/testing-validation-mcp-server/dist/server.js"
     ],
     "env": {
-      "PROJECT_ROOT": "/Users/mmaruthurnew/Desktop/medical-practice-workspace"
+      "PROJECT_ROOT": "/Users/mmaruthurnew/Desktop/operations-workspace"
     }
   }
 }

@@ -15,7 +15,7 @@ Copy and paste this into your next chat session to continue the dual-environment
 I'm continuing the MCP Implementation Master Project dual-environment retrofit. Here's the current status:
 
 **Project**: MCP Implementation Master Project
-**Location**: `/Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/mcp-implementation-master-project/`
+**Location**: `/Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/mcp-implementation-master-project/`
 
 **Progress Summary:**
 - Phase 1 (Enforcement): ✅ COMPLETE - Created validation script, updated documentation

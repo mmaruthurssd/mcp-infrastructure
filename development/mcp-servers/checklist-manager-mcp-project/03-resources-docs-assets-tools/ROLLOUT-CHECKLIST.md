@@ -251,7 +251,7 @@
 
 ### Step 1: Build Verification
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/checklist-manager-mcp-project/04-product-under-development
+cd /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/checklist-manager-mcp-project/04-product-under-development
 npm run build
 ```
 **Expected:** Clean build, `build/index.js` created

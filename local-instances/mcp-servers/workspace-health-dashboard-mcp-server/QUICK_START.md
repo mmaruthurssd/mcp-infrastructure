@@ -13,7 +13,7 @@ Get the Workspace Health Dashboard MCP running in 5 minutes.
 ### 1. The MCP is already built!
 
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server
 # Already done: npm install && npm run build
 ```
 
@@ -28,10 +28,10 @@ It's been added to `~/.claude.json`:
       "type": "stdio",
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server/dist/index.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server/dist/index.js"
       ],
       "env": {
-        "WORKSPACE_ROOT": "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
+        "WORKSPACE_ROOT": "/Users/mmaruthurnew/Desktop/operations-workspace",
         "WORKSPACE_BRAIN_PATH": "/Users/mmaruthurnew/workspace-brain"
       }
     }
@@ -157,7 +157,7 @@ Expected response:
 
 **Solution:**
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server
 rm -rf node_modules dist
 npm install
 npm run build

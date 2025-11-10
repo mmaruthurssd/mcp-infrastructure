@@ -310,9 +310,9 @@ export class PrepareTaskExecutorHandoffTool {
       // Current dev instance
       path.join(__dirname, '../../agents.json'),
       // Agent coordinator dev instance
-      '/Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/agent-coordinator-mcp-server-project/04-product-under-development/dev-instance/agents.json',
+      '/Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/agent-coordinator-mcp-server-project/04-product-under-development/dev-instance/agents.json',
       // Agent coordinator local instance
-      '/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/agent-coordinator-mcp-server/agents.json',
+      '/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/agent-coordinator-mcp-server/agents.json',
     ];
 
     for (const p of possiblePaths) {

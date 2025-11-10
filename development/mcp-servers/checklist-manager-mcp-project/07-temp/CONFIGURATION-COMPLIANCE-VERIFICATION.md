@@ -28,7 +28,7 @@ All 10 sections of the MCP Configuration Checklist have been verified and passed
 **Environment Validation:**
 - ✅ PASS - Network connectivity OK
 - ✅ PASS - Write permissions OK
-- ✅ PASS - Workspace root detected: `/Users/mmaruthurnew/Desktop/medical-practice-workspace`
+- ✅ PASS - Workspace root detected: `/Users/mmaruthurnew/Desktop/operations-workspace`
 
 **Existing Installation Check:**
 - ✅ PASS - No duplicate registrations (only 1 "checklist-manager" key found)
@@ -58,11 +58,11 @@ test -f .mcp.json && echo "FAIL" || echo "PASS"
 {
   "command": "node",
   "args": [
-    "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/checklist-manager-mcp-server/build/index.js"
+    "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/checklist-manager-mcp-server/build/index.js"
   ],
   "env": {
-    "PROJECT_ROOT": "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
-    "CHECKLIST_MANAGER_CONFIG_DIR": "/Users/mmaruthurnew/Desktop/medical-practice-workspace/configuration/checklist-manager"
+    "PROJECT_ROOT": "/Users/mmaruthurnew/Desktop/operations-workspace",
+    "CHECKLIST_MANAGER_CONFIG_DIR": "/Users/mmaruthurnew/Desktop/operations-workspace/configuration/checklist-manager"
   }
 }
 ```
@@ -114,11 +114,11 @@ jq '.mcpServers | keys[] | select(. | test("checklist"))' ~/.claude.json
 **File Verification:**
 ```bash
 # Check file exists
-ls -la /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/checklist-manager-mcp-server/build/index.js
+ls -la /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/checklist-manager-mcp-server/build/index.js
 # Result: -rw-r--r--  1 mmaruthurnew  staff  19709 Nov  1 20:25 ...
 
 # Check file type
-file /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/checklist-manager-mcp-server/build/index.js
+file /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/checklist-manager-mcp-server/build/index.js
 # Result: a /usr/bin/env node script text executable, Unicode text, UTF-8 text
 ```
 
@@ -132,8 +132,8 @@ file /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-
 - ✅ PASS - No workspace `.mcp.json` file
 
 **Environment Variables Defined:**
-1. `PROJECT_ROOT`: `/Users/mmaruthurnew/Desktop/medical-practice-workspace`
-2. `CHECKLIST_MANAGER_CONFIG_DIR`: `/Users/mmaruthurnew/Desktop/medical-practice-workspace/configuration/checklist-manager`
+1. `PROJECT_ROOT`: `/Users/mmaruthurnew/Desktop/operations-workspace`
+2. `CHECKLIST_MANAGER_CONFIG_DIR`: `/Users/mmaruthurnew/Desktop/operations-workspace/configuration/checklist-manager`
 
 ---
 
@@ -216,8 +216,8 @@ The Checklist Manager MCP configuration follows **ALL** MCP Configuration Checkl
 **Package Name:** `checklist-manager-mcp-server`
 **Configuration File:** `~/.claude.json`
 **Scope:** User (global)
-**Build Location:** `/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/checklist-manager-mcp-server/`
-**Staging Location:** `/Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/checklist-manager-mcp-project/04-product-under-development/dev-instance/`
+**Build Location:** `/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/checklist-manager-mcp-server/`
+**Staging Location:** `/Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/checklist-manager-mcp-project/04-product-under-development/dev-instance/`
 
 **Tools Count:** 10 tools
 **Build Status:** 0 TypeScript errors

@@ -241,10 +241,10 @@ Generated: 11/7/2025, 12:00:00 AM
       "type": "stdio",
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server/dist/index.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server/dist/index.js"
       ],
       "env": {
-        "WORKSPACE_ROOT": "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
+        "WORKSPACE_ROOT": "/Users/mmaruthurnew/Desktop/operations-workspace",
         "WORKSPACE_BRAIN_PATH": "/Users/mmaruthurnew/workspace-brain"
       }
     }

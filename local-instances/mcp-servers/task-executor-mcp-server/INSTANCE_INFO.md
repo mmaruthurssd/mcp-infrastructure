@@ -43,7 +43,7 @@ local-instances/mcp-servers/task-executor-mcp-server/
   "task-executor": {
     "command": "node",
     "args": [
-      "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/task-executor-mcp-server/dist/server.js"
+      "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/task-executor-mcp-server/dist/server.js"
     ]
   }
 }

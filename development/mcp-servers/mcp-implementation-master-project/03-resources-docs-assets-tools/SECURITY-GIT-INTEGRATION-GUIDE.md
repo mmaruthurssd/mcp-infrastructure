@@ -80,7 +80,7 @@ Automated pre-commit security scanning prevents credentials and PHI from being c
 
 **Current Status:** ✅ INSTALLED (Active since October 31, 2025)
 
-**Location:** `/Users/mmaruthurnew/Desktop/medical-practice-workspace/.git/hooks/pre-commit`
+**Location:** `/Users/mmaruthurnew/Desktop/operations-workspace/.git/hooks/pre-commit`
 
 **Implementation:** Bash script with pattern-based scanning
 

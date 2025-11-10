@@ -297,7 +297,7 @@ try {
 ### Build Verification
 
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/spec-driven-mcp-server
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/spec-driven-mcp-server
 npm run build
 # ✅ Build succeeded with no errors
 ```

@@ -61,6 +61,6 @@ function getWorkspacePath() {
     if (envPath) {
         return envPath;
     }
-    return path.join(os.homedir(), 'Desktop', 'medical-practice-workspace');
+    return path.join(os.homedir(), 'Desktop', 'operations-workspace');
 }
 //# sourceMappingURL=validate-project-structure.js.map

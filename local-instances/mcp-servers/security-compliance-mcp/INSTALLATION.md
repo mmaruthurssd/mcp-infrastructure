@@ -5,7 +5,7 @@
 ### 1. Build the Server
 
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/security-compliance-mcp
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/security-compliance-mcp
 npm install
 npm run build
 npm test
@@ -25,7 +25,7 @@ Add this entry:
     "security-compliance-mcp": {
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/security-compliance-mcp/build/server.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/security-compliance-mcp/build/server.js"
       ]
     }
   }

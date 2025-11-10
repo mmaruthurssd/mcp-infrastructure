@@ -217,7 +217,7 @@ export async function resolveAutonomously(args) {
         // Step 1: Create potential goal (Project Management MCP)
         // TODO: Replace with actual MCP call when integrated
         // const goalResult = await mcpClient.call_tool("project-management", "create_potential_goal", {
-        //   projectPath: "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
+        //   projectPath: "/Users/mmaruthurnew/Desktop/operations-workspace",
         //   goalName: `Fix: ${matchedPattern.name}`,
         //   goalDescription: errorEntry.errorMessage,
         //   impactScore: "Medium",
@@ -230,7 +230,7 @@ export async function resolveAutonomously(args) {
         // TODO: Replace with actual MCP call when integrated
         // const specResult = await mcpClient.call_tool("spec-driven", "sdd_guide", {
         //   action: "start",
-        //   project_path: "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
+        //   project_path: "/Users/mmaruthurnew/Desktop/operations-workspace",
         //   description: selectedApproach.description
         // });
         const specResult = { success: true, specId: `spec-${issueId}` };
@@ -239,7 +239,7 @@ export async function resolveAutonomously(args) {
         // TODO: Replace with actual MCP call when integrated
         // const workflowResult = await mcpClient.call_tool("task-executor", "create_workflow", {
         //   name: `resolve-${issueId}`,
-        //   projectPath: "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
+        //   projectPath: "/Users/mmaruthurnew/Desktop/operations-workspace",
         //   tasks: selectedApproach.steps.map(step => ({ description: step }))
         // });
         const workflowResult = { success: true, workflowName: `resolve-${issueId}` };
@@ -250,7 +250,7 @@ export async function resolveAutonomously(args) {
             const step = selectedApproach.steps[i];
             // TODO: Replace with actual MCP call when integrated
             // const taskResult = await mcpClient.call_tool("task-executor", "complete_task", {
-            //   projectPath: "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
+            //   projectPath: "/Users/mmaruthurnew/Desktop/operations-workspace",
             //   workflowName: workflowResult.workflowName,
             //   taskId: `${i + 1}`,
             //   notes: `Autonomous execution: ${step}`

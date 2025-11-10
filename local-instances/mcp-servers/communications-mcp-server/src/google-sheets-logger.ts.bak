@@ -1,0 +1,585 @@
+/**
+ * Google Sheets Logger for Communications Platform
+ *
+ * Logs all communications (email, chat, SMS) to Google Sheets for:
+ * - HIPAA-compliant audit trail
+ * - Staging/approval workflow
+ * - Historical analysis and reporting
+ *
+ * Usage:
+ *   const logger = new GoogleSheetsLogger(auth, spreadsheetId);
+ *   await logger.logCommunication({ ... });
+ *   await logger.getStagedCommunications();
+ *   await logger.approveCommunication(operationId, approvedBy);
+ */
+
+import { google } from 'googleapis';
+import { OAuth2Client } from 'google-auth-library';
+import { v4 as uuidv4 } from 'uuid';
+
+// ============================================================================
+// Type Definitions
+// ============================================================================
+
+export type CommunicationType = 'email' | 'chat' | 'sms';
+export type CommunicationDirection = 'sent' | 'received';
+export type CommunicationStatus = 'staged' | 'approved' | 'sent' | 'delivered' | 'failed';
+export type AISystem = 'claude' | 'gemini';
+export type Priority = 'urgent' | 'high' | 'normal' | 'low';
+
+export interface CommunicationLogEntry {
+  // Core fields
+  timestamp: Date;
+  operationId: string;
+  type: CommunicationType;
+  direction: CommunicationDirection;
+  status: CommunicationStatus;
+  aiSystem: AISystem;
+
+  // Sender/Recipient
+  from: string;
+  to: string;
+  subject?: string;
+  bodyPreview: string;
+  bodyLocation?: string;  // Drive file ID or URL
+
+  // Channel details
+  channel: string;  // 'gmail', 'smtp', 'chat-webhook', 'chat-api', 'twilio'
+  priority: Priority;
+
+  // Staging workflow
+  stagedBy?: string;
+  stagedAt?: Date;
+  approvedBy?: string;
+  approvedAt?: Date;
+
+  // Delivery tracking
+  sentAt?: Date;
+  deliveredAt?: Date;
+  errorMessage?: string;
+
+  // Additional metadata
+  cost?: number;
+  phiFlag: boolean;
+  metadata?: Record<string, any>;
+}
+
+export interface StagedCommunication extends CommunicationLogEntry {
+  expiresAt?: Date;
+  reviewNotes?: string;
+  reviewUrl?: string;
+}
+
+export interface ContactLogEntry {
+  timestamp: Date;
+  operationId: string;
+  operation: 'create' | 'read' | 'update' | 'delete' | 'search';
+  aiSystem: AISystem | 'manual';
+  contactId?: string;
+  contactName?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  changes?: Record<string, any>;
+  user: string;
+}
+
+export interface OperationLogEntry {
+  timestamp: Date;
+  operationId: string;
+  operationType: string;
+  operation: string;
+  aiSystem: AISystem | 'manual';
+  status: 'success' | 'failed' | 'pending';
+  details?: Record<string, any>;
+  error?: string;
+  user: string;
+}
+
+// ============================================================================
+// Google Sheets Logger Class
+// ============================================================================
+
+export class GoogleSheetsLogger {
+  private sheets: any;
+  private spreadsheetId: string;
+  private sheetsConfig: {
+    communicationsLog: string;
+    stagedCommunications: string;
+    contactsLog: string;
+    operationsLog: string;
+  };
+
+  /**
+   * Initialize Google Sheets Logger
+   *
+   * @param auth - OAuth2Client with Sheets API access
+   * @param spreadsheetId - Google Sheets spreadsheet ID
+   * @param sheetsConfig - Optional sheet names (defaults to standard names)
+   */
+  constructor(
+    auth: OAuth2Client,
+    spreadsheetId: string,
+    sheetsConfig?: Partial<typeof GoogleSheetsLogger.prototype.sheetsConfig>
+  ) {
+    this.sheets = google.sheets({ version: 'v4', auth });
+    this.spreadsheetId = spreadsheetId;
+    this.sheetsConfig = {
+      communicationsLog: sheetsConfig?.communicationsLog || 'Communications-Log',
+      stagedCommunications: sheetsConfig?.stagedCommunications || 'Staged-Communications',
+      contactsLog: sheetsConfig?.contactsLog || 'Contacts-Log',
+      operationsLog: sheetsConfig?.operationsLog || 'Operations-Log',
+    };
+  }
+
+  // ==========================================================================
+  // Communications Logging
+  // ==========================================================================
+
+  /**
+   * Log a communication operation to Google Sheets
+   *
+   * @param entry - Communication log entry
+   * @returns Operation ID
+   */
+  async logCommunication(entry: CommunicationLogEntry): Promise<string> {
+    const operationId = entry.operationId || `comm-${Date.now()}-${uuidv4().split('-')[0]}`;
+
+    const values = [
+      [
+        this.formatTimestamp(entry.timestamp),
+        operationId,
+        entry.type,
+        entry.direction,
+        entry.status,
+        entry.aiSystem,
+        entry.from,
+        entry.to,
+        entry.subject || '',
+        entry.bodyPreview,
+        entry.bodyLocation || '',
+        entry.channel,
+        entry.priority,
+        entry.stagedBy || '',
+        entry.stagedAt ? this.formatTimestamp(entry.stagedAt) : '',
+        entry.approvedBy || '',
+        entry.approvedAt ? this.formatTimestamp(entry.approvedAt) : '',
+        entry.sentAt ? this.formatTimestamp(entry.sentAt) : '',
+        entry.deliveredAt ? this.formatTimestamp(entry.deliveredAt) : '',
+        entry.errorMessage || '',
+        entry.cost || 0,
+        entry.phiFlag ? 'TRUE' : 'FALSE',
+        JSON.stringify(entry.metadata || {})
+      ]
+    ];
+
+    const sheetName = entry.status === 'staged'
+      ? this.sheetsConfig.stagedCommunications
+      : this.sheetsConfig.communicationsLog;
+
+    try {
+      await this.sheets.spreadsheets.values.append({
+        spreadsheetId: this.spreadsheetId,
+        range: `${sheetName}!A:W`,
+        valueInputOption: 'USER_ENTERED',
+        resource: { values }
+      });
+
+      console.log(`✅ Logged ${entry.type} communication: ${operationId}`);
+      return operationId;
+    } catch (error: any) {
+      console.error('❌ Error logging to Google Sheets:', error);
+      throw new Error(`Failed to log communication: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get all staged communications pending approval
+   *
+   * @returns Array of staged communications
+   */
+  async getStagedCommunications(): Promise<StagedCommunication[]> {
+    try {
+      const response = await this.sheets.spreadsheets.values.get({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.sheetsConfig.stagedCommunications}!A2:Z`,
+      });
+
+      const rows = response.data.values || [];
+      return rows
+        .filter((row: any) => row[4] === 'staged')  // Column E = status
+        .map((row: any) => this.parseCommunicationRow(row));
+    } catch (error: any) {
+      console.error('❌ Error fetching staged communications:', error);
+      throw new Error(`Failed to fetch staged communications: ${error.message}`);
+    }
+  }
+
+  /**
+   * Approve a staged communication
+   *
+   * @param operationId - Operation ID to approve
+   * @param approvedBy - Email of person approving
+   * @returns Success status
+   */
+  async approveCommunication(operationId: string, approvedBy: string): Promise<boolean> {
+    try {
+      // Find the row
+      const rowIndex = await this.findRowByOperationId(
+        this.sheetsConfig.stagedCommunications,
+        operationId
+      );
+
+      if (rowIndex === -1) {
+        throw new Error(`Operation ${operationId} not found`);
+      }
+
+      // Update status to 'approved'
+      const now = new Date();
+      await this.sheets.spreadsheets.values.update({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.sheetsConfig.stagedCommunications}!E${rowIndex}:Q${rowIndex}`,
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+          values: [[
+            'approved',  // E: status
+            '', '', '', '', '', '', '', '', '', '',  // F-O: unchanged
+            approvedBy,  // P: approved_by
+            this.formatTimestamp(now)  // Q: approved_at
+          ]]
+        }
+      });
+
+      // Move to Communications-Log
+      await this.moveToMainLog(operationId);
+
+      console.log(`✅ Approved communication: ${operationId}`);
+      return true;
+    } catch (error) {
+      console.error('❌ Error approving communication:', error);
+      throw new Error(`Failed to approve communication: ${error.message}`);
+    }
+  }
+
+  /**
+   * Reject a staged communication
+   *
+   * @param operationId - Operation ID to reject
+   * @param reviewNotes - Reason for rejection
+   * @returns Success status
+   */
+  async rejectCommunication(operationId: string, reviewNotes: string): Promise<boolean> {
+    try {
+      const rowIndex = await this.findRowByOperationId(
+        this.sheetsConfig.stagedCommunications,
+        operationId
+      );
+
+      if (rowIndex === -1) {
+        throw new Error(`Operation ${operationId} not found`);
+      }
+
+      // Update status to 'failed' with error message
+      await this.sheets.spreadsheets.values.update({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.sheetsConfig.stagedCommunications}!E${rowIndex}:T${rowIndex}`,
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+          values: [[
+            'failed',  // E: status
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '',  // F-S: unchanged
+            `Rejected: ${reviewNotes}`  // T: error_message
+          ]]
+        }
+      });
+
+      console.log(`✅ Rejected communication: ${operationId}`);
+      return true;
+    } catch (error) {
+      console.error('❌ Error rejecting communication:', error);
+      throw new Error(`Failed to reject communication: ${error.message}`);
+    }
+  }
+
+  /**
+   * Update communication status (e.g., sent → delivered)
+   *
+   * @param operationId - Operation ID to update
+   * @param status - New status
+   * @param additionalData - Additional fields to update
+   */
+  async updateCommunicationStatus(
+    operationId: string,
+    status: CommunicationStatus,
+    additionalData?: Partial<CommunicationLogEntry>
+  ): Promise<void> {
+    try {
+      const rowIndex = await this.findRowByOperationId(
+        this.sheetsConfig.communicationsLog,
+        operationId
+      );
+
+      if (rowIndex === -1) {
+        throw new Error(`Operation ${operationId} not found in main log`);
+      }
+
+      // Build update values
+      const updates: any[] = [status];  // E: status
+
+      // Add timestamps based on status
+      if (status === 'sent' && additionalData?.sentAt) {
+        updates.push(
+          '', '', '',  // F-H: unchanged
+          this.formatTimestamp(additionalData.sentAt)  // R: sent_at
+        );
+      } else if (status === 'delivered' && additionalData?.deliveredAt) {
+        updates.push(
+          '', '', '', '',  // F-I: unchanged
+          this.formatTimestamp(additionalData.deliveredAt)  // S: delivered_at
+        );
+      } else if (status === 'failed' && additionalData?.errorMessage) {
+        updates.push(
+          '', '', '', '', '',  // F-J: unchanged
+          additionalData.errorMessage  // T: error_message
+        );
+      }
+
+      await this.sheets.spreadsheets.values.update({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.sheetsConfig.communicationsLog}!E${rowIndex}`,
+        valueInputOption: 'USER_ENTERED',
+        resource: { values: [updates] }
+      });
+
+      console.log(`✅ Updated ${operationId} status to ${status}`);
+    } catch (error) {
+      console.error('❌ Error updating status:', error);
+      throw new Error(`Failed to update status: ${error.message}`);
+    }
+  }
+
+  // ==========================================================================
+  // Contact Operations Logging
+  // ==========================================================================
+
+  /**
+   * Log a contact operation
+   *
+   * @param entry - Contact log entry
+   */
+  async logContactOperation(entry: ContactLogEntry): Promise<void> {
+    const operationId = entry.operationId || `contact-${Date.now()}-${uuidv4().split('-')[0]}`;
+
+    const values = [
+      [
+        this.formatTimestamp(entry.timestamp),
+        operationId,
+        entry.operation,
+        entry.aiSystem,
+        entry.contactId || '',
+        entry.contactName || '',
+        entry.contactEmail || '',
+        entry.contactPhone || '',
+        JSON.stringify(entry.changes || {}),
+        entry.user
+      ]
+    ];
+
+    try {
+      await this.sheets.spreadsheets.values.append({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.sheetsConfig.contactsLog}!A:J`,
+        valueInputOption: 'USER_ENTERED',
+        resource: { values }
+      });
+
+      console.log(`✅ Logged contact operation: ${operationId}`);
+    } catch (error) {
+      console.error('❌ Error logging contact operation:', error);
+      throw new Error(`Failed to log contact operation: ${error.message}`);
+    }
+  }
+
+  // ==========================================================================
+  // General Operations Logging
+  // ==========================================================================
+
+  /**
+   * Log a general workspace operation
+   *
+   * @param entry - Operation log entry
+   */
+  async logOperation(entry: OperationLogEntry): Promise<void> {
+    const operationId = entry.operationId || `op-${Date.now()}-${uuidv4().split('-')[0]}`;
+
+    const values = [
+      [
+        this.formatTimestamp(entry.timestamp),
+        operationId,
+        entry.operationType,
+        entry.operation,
+        entry.aiSystem,
+        entry.status,
+        JSON.stringify(entry.details || {}),
+        entry.error || '',
+        entry.user
+      ]
+    ];
+
+    try {
+      await this.sheets.spreadsheets.values.append({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.sheetsConfig.operationsLog}!A:I`,
+        valueInputOption: 'USER_ENTERED',
+        resource: { values }
+      });
+
+      console.log(`✅ Logged operation: ${operationId}`);
+    } catch (error) {
+      console.error('❌ Error logging operation:', error);
+      throw new Error(`Failed to log operation: ${error.message}`);
+    }
+  }
+
+  // ==========================================================================
+  // Helper Methods
+  // ==========================================================================
+
+  /**
+   * Find row index by operation ID
+   */
+  private async findRowByOperationId(sheetName: string, operationId: string): Promise<number> {
+    const response = await this.sheets.spreadsheets.values.get({
+      spreadsheetId: this.spreadsheetId,
+      range: `${sheetName}!B:B`,  // Column B = operation_id
+    });
+
+    const rows = response.data.values || [];
+    const index = rows.findIndex(row => row[0] === operationId);
+    return index === -1 ? -1 : index + 2;  // +2 for header row and 1-indexed
+  }
+
+  /**
+   * Move staged communication to main log
+   */
+  private async moveToMainLog(operationId: string): Promise<void> {
+    // Get full row from staged sheet
+    const rowIndex = await this.findRowByOperationId(
+      this.sheetsConfig.stagedCommunications,
+      operationId
+    );
+
+    const response = await this.sheets.spreadsheets.values.get({
+      spreadsheetId: this.spreadsheetId,
+      range: `${this.sheetsConfig.stagedCommunications}!A${rowIndex}:W${rowIndex}`,
+    });
+
+    const row = response.data.values[0];
+
+    // Append to main log
+    await this.sheets.spreadsheets.values.append({
+      spreadsheetId: this.spreadsheetId,
+      range: `${this.sheetsConfig.communicationsLog}!A:W`,
+      valueInputOption: 'USER_ENTERED',
+      resource: { values: [row] }
+    });
+
+    // Delete from staged sheet
+    await this.sheets.spreadsheets.batchUpdate({
+      spreadsheetId: this.spreadsheetId,
+      resource: {
+        requests: [{
+          deleteDimension: {
+            range: {
+              sheetId: await this.getSheetId(this.sheetsConfig.stagedCommunications),
+              dimension: 'ROWS',
+              startIndex: rowIndex - 1,
+              endIndex: rowIndex
+            }
+          }
+        }]
+      }
+    });
+  }
+
+  /**
+   * Get sheet ID by name
+   */
+  private async getSheetId(sheetName: string): Promise<number> {
+    const response = await this.sheets.spreadsheets.get({
+      spreadsheetId: this.spreadsheetId
+    });
+
+    const sheet = response.data.sheets.find(
+      (s: any) => s.properties.title === sheetName
+    );
+
+    if (!sheet) {
+      throw new Error(`Sheet "${sheetName}" not found`);
+    }
+
+    return sheet.properties.sheetId;
+  }
+
+  /**
+   * Parse communication row from Google Sheets
+   */
+  private parseCommunicationRow(row: any[]): StagedCommunication {
+    return {
+      timestamp: new Date(row[0]),
+      operationId: row[1],
+      type: row[2] as CommunicationType,
+      direction: row[3] as CommunicationDirection,
+      status: row[4] as CommunicationStatus,
+      aiSystem: row[5] as AISystem,
+      from: row[6],
+      to: row[7],
+      subject: row[8] || undefined,
+      bodyPreview: row[9],
+      bodyLocation: row[10] || undefined,
+      channel: row[11],
+      priority: row[12] as Priority,
+      stagedBy: row[13] || undefined,
+      stagedAt: row[14] ? new Date(row[14]) : undefined,
+      approvedBy: row[15] || undefined,
+      approvedAt: row[16] ? new Date(row[16]) : undefined,
+      sentAt: row[17] ? new Date(row[17]) : undefined,
+      deliveredAt: row[18] ? new Date(row[18]) : undefined,
+      errorMessage: row[19] || undefined,
+      cost: parseFloat(row[20]) || 0,
+      phiFlag: row[21] === 'TRUE',
+      metadata: row[22] ? JSON.parse(row[22]) : undefined,
+      expiresAt: row[23] ? new Date(row[23]) : undefined,
+      reviewNotes: row[24] || undefined,
+      reviewUrl: row[25] || undefined,
+    };
+  }
+
+  /**
+   * Format timestamp for Google Sheets
+   */
+  private formatTimestamp(date: Date): string {
+    return date.toISOString().replace('T', ' ').substring(0, 19);
+  }
+}
+
+// ============================================================================
+// Factory Functions
+// ============================================================================
+
+/**
+ * Create GoogleSheetsLogger from environment variables
+ */
+export function createGoogleSheetsLogger(auth: OAuth2Client): GoogleSheetsLogger {
+  const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
+
+  if (!spreadsheetId) {
+    throw new Error('GOOGLE_SHEETS_SPREADSHEET_ID not set in environment');
+  }
+
+  return new GoogleSheetsLogger(auth, spreadsheetId, {
+    communicationsLog: process.env.GOOGLE_SHEETS_COMMUNICATIONS_LOG_SHEET || 'Communications-Log',
+    stagedCommunications: process.env.GOOGLE_SHEETS_STAGED_SHEET || 'Staged-Communications',
+    contactsLog: process.env.GOOGLE_SHEETS_CONTACTS_LOG_SHEET || 'Contacts-Log',
+    operationsLog: process.env.GOOGLE_SHEETS_OPERATIONS_LOG_SHEET || 'Operations-Log',
+  });
+}

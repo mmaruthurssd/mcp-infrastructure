@@ -491,7 +491,7 @@ After 3 months of using this integration:
 
 **Solution:**
 ```bash
-cd ~/Desktop/medical-practice-workspace/development/mcp-servers/standards-enforcement-mcp-project/04-product-under-development
+cd ~/Desktop/operations-workspace/development/mcp-servers/standards-enforcement-mcp-project/04-product-under-development
 npm run build
 ```
 

@@ -104,7 +104,7 @@ export class ConfigurableWorkspaceAdapter {
         const hasDevFolder = await ConfigurableWorkspaceAdapter.pathExists(path.join(workspaceRoot, 'development'));
         const hasMcpServers = await ConfigurableWorkspaceAdapter.pathExists(path.join(workspaceRoot, 'local-instances', 'mcp-servers'));
         if (hasDevFolder && hasMcpServers)
-            return 'medical-practice-workspace';
+            return 'operations-workspace';
         if (hasMcpServers)
             return 'mcp-workspace';
         return 'general';

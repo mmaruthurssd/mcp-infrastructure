@@ -9,7 +9,7 @@
 import { GetNextStepsTool } from './dist/tools/get-next-steps.js';
 import { GetProjectStatusTool } from './dist/tools/get-project-status.js';
 
-const projectPath = '/Users/mmaruthurnew/Desktop/medical-practice-workspace/projects-in-development/workflow-orchestrator-project';
+const projectPath = '/Users/mmaruthurnew/Desktop/operations-workspace/projects-in-development/workflow-orchestrator-project';
 
 console.log('\n' + '='.repeat(70));
 console.log('  REAL PROJECT TEST - Workflow Orchestrator Project');

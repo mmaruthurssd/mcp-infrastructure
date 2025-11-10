@@ -456,7 +456,7 @@ if (!result.success) {
   "targetMCP": "spec-driven",
   "handoffType": "goal-to-spec",
   "context": {
-    "projectPath": "/projects/medical-practice-workspace",
+    "projectPath": "/projects/operations-workspace",
     "projectId": "project-management-mcp",
     "componentId": "data-model-architecture",
     "componentName": "Data Model & Architecture",
@@ -493,7 +493,7 @@ if (!result.success) {
       "estimate": "1-2 weeks"
     },
     "targetPaths": {
-      "subGoalsFolder": "/projects/medical-practice-workspace/project-management-mcp/goals/001/sub-goals"
+      "subGoalsFolder": "/projects/operations-workspace/project-management-mcp/goals/001/sub-goals"
     },
     "preferences": {
       "numberOfSubGoals": 3,

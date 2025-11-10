@@ -48,7 +48,7 @@ Add to Claude Code configuration (see `MCP-CONFIGURATION.md` for details):
     "performance-monitor-mcp": {
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js"
       ]
     }
   }

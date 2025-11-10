@@ -93,7 +93,7 @@ mv src build tests templates node_modules package.json package-lock.json \
 ### Step 2: Deploy to Production
 Create production instance in local-instances:
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/
 mkdir checklist-manager
 
 # Copy necessary files from dev-instance
@@ -114,7 +114,7 @@ Update ~/.claude.json to point to production instance:
     "checklist-manager": {
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/checklist-manager/dist/index.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/checklist-manager/dist/index.js"
       ]
     }
   }

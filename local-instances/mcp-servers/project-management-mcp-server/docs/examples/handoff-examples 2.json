@@ -11,7 +11,7 @@
         "targetMCP": "spec-driven",
         "handoffType": "goal-to-spec",
         "context": {
-          "projectPath": "/Users/user/projects/medical-practice-workspace",
+          "projectPath": "/Users/user/projects/operations-workspace",
           "projectId": "project-management-mcp-v1",
           "componentId": "data-model-architecture",
           "componentName": "Data Model & Architecture",
@@ -70,7 +70,7 @@
             "targetDate": "2025-11-10T00:00:00.000Z"
           },
           "targetPaths": {
-            "subGoalsFolder": "/Users/user/projects/medical-practice-workspace/project-management-mcp/02-goals-and-roadmap/components/data-model-architecture/major-goals/001-design-hierarchical-data-model/sub-goals"
+            "subGoalsFolder": "/Users/user/projects/operations-workspace/project-management-mcp/02-goals-and-roadmap/components/data-model-architecture/major-goals/001-design-hierarchical-data-model/sub-goals"
           },
           "preferences": {
             "numberOfSubGoals": 3,
@@ -92,7 +92,7 @@
         "targetMCP": "task-executor",
         "handoffType": "spec-to-tasks",
         "context": {
-          "projectPath": "/Users/user/projects/medical-practice-workspace",
+          "projectPath": "/Users/user/projects/operations-workspace",
           "projectId": "project-management-mcp-v1",
           "componentId": "data-model-architecture",
           "componentName": "Data Model & Architecture",
@@ -145,7 +145,7 @@
             "urgency": "high"
           },
           "targetPaths": {
-            "workflowFolder": "/Users/user/projects/medical-practice-workspace/project-management-mcp/temp/workflows/goal-001-subgoal-1.1"
+            "workflowFolder": "/Users/user/projects/operations-workspace/project-management-mcp/temp/workflows/goal-001-subgoal-1.1"
           },
           "dependencies": {
             "blockedBy": [],
@@ -166,7 +166,7 @@
         "targetMCP": "spec-driven",
         "handoffType": "task-completion",
         "context": {
-          "projectPath": "/Users/user/projects/medical-practice-workspace",
+          "projectPath": "/Users/user/projects/operations-workspace",
           "projectId": "project-management-mcp-v1",
           "componentId": "data-model-architecture",
           "componentName": "Data Model & Architecture",
@@ -233,7 +233,7 @@
         "targetMCP": "ai-planning",
         "handoffType": "subgoal-completion",
         "context": {
-          "projectPath": "/Users/user/projects/medical-practice-workspace",
+          "projectPath": "/Users/user/projects/operations-workspace",
           "projectId": "project-management-mcp-v1",
           "componentId": "data-model-architecture",
           "componentName": "Data Model & Architecture",
@@ -298,7 +298,7 @@
         "targetMCP": "ai-planning",
         "handoffType": "progress-update",
         "context": {
-          "projectPath": "/Users/user/projects/medical-practice-workspace",
+          "projectPath": "/Users/user/projects/operations-workspace",
           "projectId": "project-management-mcp-v1",
           "componentId": "data-model-architecture",
           "componentName": "Data Model & Architecture",

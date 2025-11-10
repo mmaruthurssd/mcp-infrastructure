@@ -29,7 +29,7 @@ if [ $# -eq 0 ]; then
 fi
 
 MCP_NAME=$1
-WORKSPACE_ROOT="/Users/mmaruthurnew/Desktop/medical-practice-workspace"
+WORKSPACE_ROOT="/Users/mmaruthurnew/Desktop/operations-workspace"
 STAGING_PROJECT="${WORKSPACE_ROOT}/mcp-server-development/${MCP_NAME}-project"
 DEV_INSTANCE="${STAGING_PROJECT}/04-product-under-development/dev-instance"
 PRODUCTION_PATH="${WORKSPACE_ROOT}/local-instances/mcp-servers/${MCP_NAME}"

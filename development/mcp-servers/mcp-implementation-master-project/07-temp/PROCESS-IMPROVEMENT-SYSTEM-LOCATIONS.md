@@ -30,7 +30,7 @@ mcp-server-development/
 ```
 
 **Full Path:**
-`/Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/mcp-implementation-master-project/process-improvements/`
+`/Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/mcp-implementation-master-project/process-improvements/`
 
 ### 3. Where are the enforcement rules?
 📋 **Location:**

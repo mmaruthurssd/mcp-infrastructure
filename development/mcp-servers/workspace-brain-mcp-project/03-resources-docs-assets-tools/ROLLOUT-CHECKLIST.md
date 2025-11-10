@@ -184,7 +184,7 @@ I have verified that this MCP follows all configuration best practices from MCP-
 2. **Deploy**
    ```bash
    # Use command from MCP-CONFIGURATION.md
-   claude mcp add --transport stdio workspace-brain-mcp -- node /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/workspace-brain-mcp-project/04-product-under-development/build/index.js
+   claude mcp add --transport stdio workspace-brain-mcp -- node /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/workspace-brain-mcp-project/04-product-under-development/build/index.js
    ```
 
 3. **Post-Deployment**

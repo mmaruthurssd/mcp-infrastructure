@@ -50,7 +50,7 @@ mcp-server-development/checklist-manager-mcp-project/04-product-under-developmen
         "/Users/mmaruthurnew/.../local-instances/mcp-servers/checklist-manager/build/index.js"
       ],
       "env": {
-        "PROJECT_ROOT": "/Users/mmaruthurnew/.../medical-practice-workspace",
+        "PROJECT_ROOT": "/Users/mmaruthurnew/.../operations-workspace",
         "CHECKLIST_MANAGER_CONFIG_DIR": "/Users/mmaruthurnew/.../configuration/checklist-manager"
       }
     }

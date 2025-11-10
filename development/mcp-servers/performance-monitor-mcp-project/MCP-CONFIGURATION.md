@@ -21,7 +21,7 @@
 
 ```bash
 # Check that build completed successfully
-ls -la /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js
+ls -la /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js
 ```
 
 **Expected output:** File should exist with read/execute permissions
@@ -32,7 +32,7 @@ ls -la /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-develop
 
 **Command:**
 ```bash
-claude mcp add --transport stdio performance-monitor-mcp -- node /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js
+claude mcp add --transport stdio performance-monitor-mcp -- node /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js
 ```
 
 **Explanation:**
@@ -226,10 +226,10 @@ which claude
 node --version  # Should show v18+ or v20+
 
 # Verify build artifacts exist
-ls -la /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js
+ls -la /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js
 
 # If missing, rebuild
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development
+cd /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development
 npm run build
 ```
 
@@ -310,7 +310,7 @@ cp ~/.claude.json ~/.claude.json.backup
 ```bash
 claude mcp add performance-monitor-mcp \
   --command node \
-  --args /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js \
+  --args /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js \
   --scope user
 ```
 

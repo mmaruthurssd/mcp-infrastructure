@@ -138,7 +138,7 @@ templates-and-patterns/simple-templates/goal-workflow-template/
 ### Step 1: Quick Verification (5 min)
 
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/project-management-mcp-server
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/project-management-mcp-server
 
 # Verify build works
 npm run build  # Should succeed with 0 errors
@@ -157,9 +157,9 @@ cat package.json | grep version  # Should show "0.2.0"
 I want to implement Phase 3 of the Project Management MCP Server.
 
 Please read these files to get context:
-1. /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/project-management-mcp-server/PHASE3-KICKOFF.md
-2. /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/project-management-mcp-server/PHASE3-CHECKLIST.md
-3. /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/project-management-mcp-server/README.md
+1. /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/project-management-mcp-server/PHASE3-KICKOFF.md
+2. /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/project-management-mcp-server/PHASE3-CHECKLIST.md
+3. /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/project-management-mcp-server/README.md
 
 Current status:
 - Version: 0.2.0

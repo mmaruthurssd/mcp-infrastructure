@@ -80,7 +80,7 @@ status: completed
       "type": "stdio",
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js"
       ],
       "env": {}
     }
@@ -165,10 +165,10 @@ test -f .mcp.json && echo "EXISTS" || echo "NOT FOUND"
 
 **Path Verification:**
 ```bash
-ls -la /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js
+ls -la /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js
 # Result: -rw-r--r--  1 mmaruthurnew  staff  15234 Oct 30 14:23 index.js (EXISTS)
 
-file /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js
+file /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js
 # Result: JavaScript file (VALID)
 ```
 
@@ -216,11 +216,11 @@ cat ~/.claude.json | jq .
 ### Configuration Integrity Check ✅
 ```bash
 # Check path exists
-ls -la /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js
+ls -la /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js
 # Result: EXISTS ✅
 
 # Check Node.js can load the file
-node -e "require('/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js')"
+node -e "require('/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js')"
 # Result: No errors (loads successfully) ✅
 ```
 
@@ -286,7 +286,7 @@ npm run build
 **Recommended Command (for reference):**
 ```bash
 claude mcp add --scope project --transport stdio configuration-manager-mcp -- \
-  node /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js
+  node /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/configuration-manager-mcp/dist/index.js
 ```
 
 **Result:** ⚠️ WORKS BUT NOT BEST PRACTICE

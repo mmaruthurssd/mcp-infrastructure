@@ -6,7 +6,7 @@
 
 set -e  # Exit on error
 
-WORKSPACE_ROOT="/Users/mmaruthurnew/Desktop/medical-practice-workspace"
+WORKSPACE_ROOT="/Users/mmaruthurnew/Desktop/operations-workspace"
 TEMPLATE_DIR="${WORKSPACE_ROOT}/mcp-server-development/_mcp-project-template"
 STAGING_BASE="${WORKSPACE_ROOT}/mcp-server-development"
 PRODUCTION_BASE="${WORKSPACE_ROOT}/local-instances/mcp-servers"

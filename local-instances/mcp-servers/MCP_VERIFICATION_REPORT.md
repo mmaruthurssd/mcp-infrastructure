@@ -11,7 +11,7 @@ priority: medium
 # MCP Server Comprehensive Verification Report
 
 **Date:** 2025-10-16
-**Workspace:** /Users/mmaruthurnew/Desktop/medical-practice-workspace
+**Workspace:** /Users/mmaruthurnew/Desktop/operations-workspace
 **VS Code Config:** ~/Library/Application Support/Code/User/mcp.json
 
 ## Executive Summary
@@ -260,7 +260,7 @@ No warnings.
 
 ## Verification Method
 
-**Script Used:** `/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/comprehensive-mcp-verification.sh`
+**Script Used:** `/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/comprehensive-mcp-verification.sh`
 
 **Manual Verification:**
 - VS Code User mcp.json content manually inspected

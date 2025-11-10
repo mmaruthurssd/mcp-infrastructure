@@ -232,7 +232,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Links
 
-- **Repository:** [medical-practice-workspace/local-instances/mcp-servers/project-management-mcp-server](../../project-management-mcp-server)
+- **Repository:** [operations-workspace/local-instances/mcp-servers/project-management-mcp-server](../../project-management-mcp-server)
 - **Workflow Orchestrator:** [workflow-orchestrator-mcp-server](../workflow-orchestrator-mcp-server)
 - **Documentation:** [docs/](./docs/)
 

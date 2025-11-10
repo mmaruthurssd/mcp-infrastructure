@@ -142,7 +142,7 @@ const optimized = mcp__parallelization-mcp__optimize_batch_distribution({
 ## Build Commands
 
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/parallelization-mcp
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/parallelization-mcp
 npm run build
 ```
 

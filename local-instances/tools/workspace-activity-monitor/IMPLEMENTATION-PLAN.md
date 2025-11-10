@@ -1543,7 +1543,7 @@ Assuming 4-6 hours per day:
 ### A. Directory Structure (Complete)
 
 ```
-medical-practice-workspace/
+operations-workspace/
 ├── local-instances/tools/workspace-activity-monitor/
 │   ├── src/
 │   │   ├── pattern-registry.js

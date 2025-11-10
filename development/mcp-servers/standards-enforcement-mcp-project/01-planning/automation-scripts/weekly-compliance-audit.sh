@@ -11,7 +11,7 @@
 
 set -e
 
-WORKSPACE_ROOT="$HOME/Desktop/medical-practice-workspace"
+WORKSPACE_ROOT="$HOME/Desktop/operations-workspace"
 MCP_DIR="$WORKSPACE_ROOT/local-instances/mcp-servers"
 REPORT_DIR="$WORKSPACE_ROOT/compliance-reports"
 REPORT_FILE="$REPORT_DIR/compliance-$(date +%Y-%m-%d).md"

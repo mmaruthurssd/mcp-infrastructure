@@ -99,7 +99,7 @@ console.log(result);
 const result = await create_backup({
   sources: [
     '/Users/user/workspace-brain/',
-    '/Users/user/medical-practice-workspace/checklist-registry.json',
+    '/Users/user/operations-workspace/checklist-registry.json',
     '/Users/user/.smart-file-organizer-rules.json'
   ],
   type: 'full',
@@ -718,7 +718,7 @@ const result = await schedule_backup({
     backupConfig: {
       sources: [
         '/Users/user/workspace-brain/',
-        '/Users/user/medical-practice-workspace/checklist-registry.json',
+        '/Users/user/operations-workspace/checklist-registry.json',
         '/Users/user/.smart-file-organizer-rules.json'
       ],
       type: 'full',
@@ -1119,7 +1119,7 @@ console.log(result);
 //   config: {
 //     backupSources: [
 //       '/Users/user/workspace-brain/',
-//       '/Users/user/medical-practice-workspace/checklist-registry.json'
+//       '/Users/user/operations-workspace/checklist-registry.json'
 //     ],
 //     excludePatterns: [
 //       '**/node_modules/**',
@@ -1159,7 +1159,7 @@ const result = await export_backup_config({
 //
 // ## Backup Sources
 // - `/Users/user/workspace-brain/`
-// - `/Users/user/medical-practice-workspace/checklist-registry.json`
+// - `/Users/user/operations-workspace/checklist-registry.json`
 //
 // ## Schedules
 // - **daily-workspace-brain**: 2 AM daily (incremental)
@@ -1180,7 +1180,7 @@ const result = await export_backup_config({
 // Creates YAML configuration:
 // backupSources:
 //   - /Users/user/workspace-brain/
-//   - /Users/user/medical-practice-workspace/checklist-registry.json
+//   - /Users/user/operations-workspace/checklist-registry.json
 // excludePatterns:
 //   - '**/node_modules/**'
 // compression: true
@@ -1201,7 +1201,7 @@ const result = await export_backup_config({
 const fullBackup = await create_backup({
   sources: [
     '/Users/user/workspace-brain/',
-    '/Users/user/medical-practice-workspace/checklist-registry.json',
+    '/Users/user/operations-workspace/checklist-registry.json',
     '/Users/user/.smart-file-organizer-rules.json'
   ],
   type: 'full',
@@ -1248,7 +1248,7 @@ const weeklySchedule = await schedule_backup({
     backupConfig: {
       sources: [
         '/Users/user/workspace-brain/',
-        '/Users/user/medical-practice-workspace/checklist-registry.json'
+        '/Users/user/operations-workspace/checklist-registry.json'
       ],
       type: 'full',
       label: 'auto-weekly-full',

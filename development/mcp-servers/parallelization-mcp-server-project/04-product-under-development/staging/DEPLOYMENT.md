@@ -31,7 +31,7 @@ The Parallelization MCP has been successfully built, tested, and deployed to pro
   "parallelization-mcp": {
     "command": "node",
     "args": [
-      "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/parallelization-mcp/dist/server.js"
+      "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/parallelization-mcp/dist/server.js"
     ]
   }
 }

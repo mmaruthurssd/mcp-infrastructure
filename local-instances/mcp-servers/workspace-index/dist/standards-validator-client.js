@@ -16,7 +16,7 @@ export class StandardsValidator {
     constructor() {
         // Path to standards-enforcement-mcp
         const workspacePath = process.env.WORKSPACE_PATH ||
-            path.join(os.homedir(), 'Desktop', 'medical-practice-workspace');
+            path.join(os.homedir(), 'Desktop', 'operations-workspace');
         this.standardsMcpPath = path.join(workspacePath, 'development', 'mcp-servers', 'standards-enforcement-mcp-project', '04-product-under-development', 'dist', 'index.js');
     }
     /**

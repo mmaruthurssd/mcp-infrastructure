@@ -80,7 +80,7 @@ Build artifacts exist with correct permissions (executable).
 ### Registration Command Executed
 
 ```bash
-claude mcp add --transport stdio performance-monitor-mcp -- node /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js
+claude mcp add --transport stdio performance-monitor-mcp -- node /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/performance-monitor-mcp-project/04-product-under-development/build/index.js
 ```
 
 **Result:**

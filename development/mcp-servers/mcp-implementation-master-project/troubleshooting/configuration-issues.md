@@ -383,7 +383,7 @@ The compiled output (`dist/` folder with server.js) existed, and the configurati
 
 **Step 1: Navigate to Production Location**
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/testing-validation-mcp-server
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/testing-validation-mcp-server
 ```
 
 **Step 2: Verify Missing Dependencies**

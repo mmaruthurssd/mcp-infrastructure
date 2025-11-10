@@ -59,7 +59,7 @@ All data is cached for 60 seconds to prevent excessive calls to other MCPs. Cach
 ### 1. Build the MCP
 
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server
 npm install
 npm run build
 ```
@@ -74,7 +74,7 @@ Add to `~/.claude.json`:
     "workspace-health-dashboard": {
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server/dist/index.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/workspace-health-dashboard-mcp-server/dist/index.js"
       ]
     }
   }

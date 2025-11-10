@@ -222,7 +222,7 @@ export class ConfigurableWorkspaceAdapter {
       path.join(workspaceRoot, 'local-instances', 'mcp-servers')
     );
 
-    if (hasDevFolder && hasMcpServers) return 'medical-practice-workspace';
+    if (hasDevFolder && hasMcpServers) return 'operations-workspace';
     if (hasMcpServers) return 'mcp-workspace';
     return 'general';
   }

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "projectPath": "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/deployment-release-mcp",
+  "projectPath": "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/deployment-release-mcp",
   "lastUpdated": "2025-10-31T04:18:09.094Z",
   "releases": [
     {
@@ -29,7 +29,7 @@
       ],
       "duration": 4696,
       "overallHealth": "unhealthy",
-      "releaseNotesPath": "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/deployment-release-mcp/.deployment-registry/release-notes/staging/test-release-v1-0-0-2025-10-31.md"
+      "releaseNotesPath": "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/deployment-release-mcp/.deployment-registry/release-notes/staging/test-release-v1-0-0-2025-10-31.md"
     }
   ]
 }

@@ -498,7 +498,7 @@ Edit(WORKSPACE_GUIDE.md, line 46): "21 active MCPs projects" → "25 active MCPs
 **Test Execution:**
 ```bash
 mcp__workspace-index__update_workspace_docs_for_reality(
-  projectPath: "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
+  projectPath: "/Users/mmaruthurnew/Desktop/operations-workspace",
   dryRun: false
 )
 ```
@@ -519,7 +519,7 @@ mcp__workspace-index__update_workspace_docs_for_reality(
 📄 WORKSPACE_GUIDE.md (4 lines modified)
 📄 WORKSPACE_ARCHITECTURE.md (2 lines modified)
 
-💾 Backups saved to: /Users/mmaruthurnew/Desktop/medical-practice-workspace/.doc-backups
+💾 Backups saved to: /Users/mmaruthurnew/Desktop/operations-workspace/.doc-backups
 ```
 
 ### Lessons from Bug Fix Session

@@ -245,7 +245,7 @@ VERDICT: Autonomous workflows are highly profitable ✓
 
 ### Source Code
 ```
-/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/workspace-brain-mcp-server/
+/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/workspace-brain-mcp-server/
 ├── src/
 │   ├── index.ts                          # Updated with 4 new tools
 │   └── tools/

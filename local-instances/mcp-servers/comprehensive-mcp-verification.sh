@@ -18,7 +18,7 @@ TOTAL_CHECKS=0
 PASSED_CHECKS=0
 FAILED_CHECKS=0
 
-WORKSPACE_ROOT="/Users/mmaruthurnew/Desktop/medical-practice-workspace"
+WORKSPACE_ROOT="/Users/mmaruthurnew/Desktop/operations-workspace"
 VSCODE_USER_CONFIG="$HOME/Library/Application Support/Code/User/mcp.json"
 
 echo "========================================="

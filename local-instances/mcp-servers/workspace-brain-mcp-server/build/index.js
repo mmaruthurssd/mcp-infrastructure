@@ -25,7 +25,7 @@ const WORKSPACE_BRAIN_PATH = process.env.WORKSPACE_BRAIN_PATH || join(homedir(),
 // Simple error logger for autonomous detection
 function logErrorToFile(mcpName, toolName, errorMessage, errorStack, severity = "medium", context) {
     try {
-        const workspaceRoot = join(homedir(), "..", "..", "Desktop", "medical-practice-workspace");
+        const workspaceRoot = join(homedir(), "..", "..", "Desktop", "operations-workspace");
         const logDir = join(workspaceRoot, ".ai-planning", "issues");
         const logPath = join(logDir, "error-log.json");
         // Ensure directory exists

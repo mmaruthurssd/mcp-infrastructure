@@ -25,7 +25,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const WORKSPACE_ROOT = '/Users/mmaruthurnew/Desktop/medical-practice-workspace';
+const WORKSPACE_ROOT = '/Users/mmaruthurnew/Desktop/operations-workspace';
 const CONFIDENCE_THRESHOLD = 0.70; // Require 70% confidence for autonomous resolution
 const MAX_EFFORT_HOURS = 2; // Maximum 2 hours estimated effort
 const MAX_FILES_AFFECTED = 3; // Maximum 3 files for autonomous changes

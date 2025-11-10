@@ -3,7 +3,7 @@
 # switch-config.sh - Switch between MCP configurations
 # Usage: ./switch-config.sh [practice|development|research|minimal|list|current]
 
-WORKSPACE_ROOT="$HOME/Desktop/medical-practice-workspace"
+WORKSPACE_ROOT="$HOME/Desktop/operations-workspace"
 CLAUDE_DIR="$WORKSPACE_ROOT/.claude"
 
 # Colors for output

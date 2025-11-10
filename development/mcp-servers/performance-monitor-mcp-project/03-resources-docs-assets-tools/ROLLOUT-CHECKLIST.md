@@ -137,7 +137,7 @@
   - ✓ Registered in `~/.claude.json` (correct file for Claude Code CLI)
   - ✓ Removed incorrect entry from `claude_desktop_config.json`
 - [x] **Path validation**
-  - ✓ Absolute path used: `/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/performance-monitor-mcp-server/dist/index.js`
+  - ✓ Absolute path used: `/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/performance-monitor-mcp-server/dist/index.js`
   - ✓ No `${workspaceFolder}` variable (not supported)
   - ✓ Path verified to exist
 - [x] **Scope decision documented**
@@ -147,8 +147,8 @@
   - ✓ No `.mcp.json` in workspace root
   - ✓ Claude Code CLI uses `~/.claude.json` ONLY
 - [x] **Environment variables configured**
-  - ✓ `PERFORMANCE_MONITOR_PROJECT_ROOT`: `/Users/mmaruthurnew/Desktop/medical-practice-workspace`
-  - ✓ `PERFORMANCE_MONITOR_CONFIG_DIR`: `/Users/mmaruthurnew/Desktop/medical-practice-workspace/configuration/performance-monitor`
+  - ✓ `PERFORMANCE_MONITOR_PROJECT_ROOT`: `/Users/mmaruthurnew/Desktop/operations-workspace`
+  - ✓ `PERFORMANCE_MONITOR_CONFIG_DIR`: `/Users/mmaruthurnew/Desktop/operations-workspace/configuration/performance-monitor`
   - ✓ Configuration directory created
 - [ ] **Registration verified**
   - `claude mcp list` shows `performance-monitor-mcp` (requires restart)

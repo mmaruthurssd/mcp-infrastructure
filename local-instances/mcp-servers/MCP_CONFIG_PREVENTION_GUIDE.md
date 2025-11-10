@@ -155,7 +155,7 @@ mkdir -p ../../configuration/new-server
 ### ❌ Hardcoded Paths
 ```json
 "args": [
-  "/Users/mmaruthurnew/Desktop/medical-practice-workspace/..."
+  "/Users/mmaruthurnew/Desktop/operations-workspace/..."
 ]
 ```
 

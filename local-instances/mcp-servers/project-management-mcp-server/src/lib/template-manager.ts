@@ -19,7 +19,7 @@ import { ProjectType } from "./component-types.js";
  */
 export const TEMPLATES_BASE = path.join(
   process.env.HOME || "",
-  "Desktop/medical-practice-workspace/templates-and-patterns/project-structure-templates/base-template"
+  "Desktop/operations-workspace/templates-and-patterns/project-structure-templates/base-template"
 );
 
 /**

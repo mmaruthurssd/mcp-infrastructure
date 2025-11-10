@@ -45,7 +45,7 @@ Already registered in `~/.claude.json` as:
     "autonomous-deployment": {
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/autonomous-deployment-mcp-server/dist/index.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/autonomous-deployment-mcp-server/dist/index.js"
       ]
     }
   }

@@ -60,7 +60,7 @@ export class StandardsValidator {
   constructor() {
     // Path to standards-enforcement-mcp
     const workspacePath = process.env.WORKSPACE_PATH ||
-      path.join(os.homedir(), 'Desktop', 'medical-practice-workspace');
+      path.join(os.homedir(), 'Desktop', 'operations-workspace');
 
     this.standardsMcpPath = path.join(
       workspacePath,

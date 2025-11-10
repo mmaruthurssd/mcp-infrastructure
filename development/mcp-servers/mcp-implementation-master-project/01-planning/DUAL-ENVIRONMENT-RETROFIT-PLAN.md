@@ -607,7 +607,7 @@ done
 ```javascript
 mcp__task-executor__create_workflow({
   name: "dual-environment-retrofit",
-  projectPath: "/Users/mmaruthurnew/Desktop/medical-practice-workspace",
+  projectPath: "/Users/mmaruthurnew/Desktop/operations-workspace",
   tasks: [
     // Phase 1: Enforcement (1-1.5 hours)
     { description: "Create validate-dual-environment.sh script" },

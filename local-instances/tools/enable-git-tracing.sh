@@ -2,9 +2,9 @@
 # Enable Git Command Tracing
 # This will log EVERY git command that runs to help identify the trigger
 
-TRACE_LOG="/Users/mmaruthurnew/Desktop/medical-practice-workspace/.git-monitor-logs/git-trace-$(date +%Y%m%d-%H%M%S).log"
+TRACE_LOG="/Users/mmaruthurnew/Desktop/operations-workspace/.git-monitor-logs/git-trace-$(date +%Y%m%d-%H%M%S).log"
 
-mkdir -p "/Users/mmaruthurnew/Desktop/medical-practice-workspace/.git-monitor-logs"
+mkdir -p "/Users/mmaruthurnew/Desktop/operations-workspace/.git-monitor-logs"
 
 echo "========================================" > "$TRACE_LOG"
 echo "Git Tracing Enabled: $(date)" >> "$TRACE_LOG"

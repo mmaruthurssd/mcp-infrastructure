@@ -19,7 +19,7 @@ sudo chown -R $(id -u):$(id -g) "$HOME/.npm"
 ## Step 2: Install and build
 
 ```bash
-cd /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/communications-mcp-server
+cd /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/communications-mcp-server
 npm install
 npm run build
 ```
@@ -56,7 +56,7 @@ npm run build
    - Copy the 16-character password
 
 2. **Update `.mcp.json`:**
-   Edit `/Users/mmaruthurnew/Desktop/medical-practice-workspace/.mcp.json` and add:
+   Edit `/Users/mmaruthurnew/Desktop/operations-workspace/.mcp.json` and add:
 
 ```json
 {
@@ -64,7 +64,7 @@ npm run build
     "communications": {
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/communications-mcp-server/dist/server.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/communications-mcp-server/dist/server.js"
       ],
       "env": {
         "SMTP_HOST": "smtp.gmail.com",
@@ -127,7 +127,7 @@ Only needed if you want:
        "communications": {
          "command": "node",
          "args": [
-           "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/communications-mcp-server/dist/server.js"
+           "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/communications-mcp-server/dist/server.js"
          ],
          "env": {
            "GOOGLE_CLIENT_ID": "YOUR_CLIENT_ID",
@@ -152,7 +152,7 @@ Merge the configuration from your chosen method into your existing `.mcp.json`.
     "communications": {
       "command": "node",
       "args": [
-        "/Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/communications-mcp-server/dist/server.js"
+        "/Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/communications-mcp-server/dist/server.js"
       ]
     }
   }

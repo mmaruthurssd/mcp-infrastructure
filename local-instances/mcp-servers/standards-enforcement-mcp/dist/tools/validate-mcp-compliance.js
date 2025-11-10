@@ -55,7 +55,7 @@ export async function validateMcpCompliance(params) {
 }
 /**
  * Get workspace path
- * Defaults to ~/Desktop/medical-practice-workspace
+ * Defaults to ~/Desktop/operations-workspace
  */
 function getWorkspacePath() {
     // Check environment variable first
@@ -64,6 +64,6 @@ function getWorkspacePath() {
         return envPath;
     }
     // Default to standard location
-    return path.join(os.homedir(), 'Desktop', 'medical-practice-workspace');
+    return path.join(os.homedir(), 'Desktop', 'operations-workspace');
 }
 //# sourceMappingURL=validate-mcp-compliance.js.map

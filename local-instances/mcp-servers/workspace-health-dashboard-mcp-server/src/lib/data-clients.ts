@@ -9,7 +9,7 @@ import { homedir } from 'os';
 import { PerformanceMetric, WorkflowStatus } from '../types/index.js';
 
 const WORKSPACE_BRAIN_PATH = process.env.WORKSPACE_BRAIN_PATH || join(homedir(), 'workspace-brain');
-const WORKSPACE_ROOT = process.env.WORKSPACE_ROOT || join(homedir(), 'Desktop/medical-practice-workspace');
+const WORKSPACE_ROOT = process.env.WORKSPACE_ROOT || join(homedir(), 'Desktop/operations-workspace');
 
 /**
  * Get performance metrics from performance-monitor-mcp

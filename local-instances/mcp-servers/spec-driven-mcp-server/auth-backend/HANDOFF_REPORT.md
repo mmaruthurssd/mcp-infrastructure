@@ -566,7 +566,7 @@ Server runs on: `http://localhost:3000`
 **File Locations**:
 All code is in the `auth-backend/` directory:
 ```
-/Users/mmaruthurnew/Desktop/medical-practice-workspace/
+/Users/mmaruthurnew/Desktop/operations-workspace/
   local-instances/mcp-servers/spec-driven-mcp-server/auth-backend/
 ```
 

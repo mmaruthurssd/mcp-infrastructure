@@ -12,7 +12,7 @@ tags: [configuration, deployment, mcp-setup]
 ## Deployment Command
 
 ```bash
-claude mcp add --transport stdio workspace-brain-mcp -- node /Users/mmaruthurnew/Desktop/medical-practice-workspace/mcp-server-development/workspace-brain-mcp-project/04-product-under-development/build/index.js
+claude mcp add --transport stdio workspace-brain-mcp -- node /Users/mmaruthurnew/Desktop/operations-workspace/mcp-server-development/workspace-brain-mcp-project/04-product-under-development/build/index.js
 ```
 
 **Scope:** User (global - generic utility)

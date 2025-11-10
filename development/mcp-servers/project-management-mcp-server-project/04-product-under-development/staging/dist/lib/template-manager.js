@@ -13,7 +13,7 @@ import { replacePlaceholders } from "./markdown-parser.js";
 /**
  * Base path to templates
  */
-export const TEMPLATES_BASE = path.join(process.env.HOME || "", "Desktop/medical-practice-workspace/templates-and-patterns/project-structure-templates/base-template");
+export const TEMPLATES_BASE = path.join(process.env.HOME || "", "Desktop/operations-workspace/templates-and-patterns/project-structure-templates/base-template");
 /**
  * Template file paths
  */

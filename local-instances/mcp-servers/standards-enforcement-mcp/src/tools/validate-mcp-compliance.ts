@@ -77,7 +77,7 @@ export async function validateMcpCompliance(
 
 /**
  * Get workspace path
- * Defaults to ~/Desktop/medical-practice-workspace
+ * Defaults to ~/Desktop/operations-workspace
  */
 function getWorkspacePath(): string {
   // Check environment variable first
@@ -87,5 +87,5 @@ function getWorkspacePath(): string {
   }
 
   // Default to standard location
-  return path.join(os.homedir(), 'Desktop', 'medical-practice-workspace');
+  return path.join(os.homedir(), 'Desktop', 'operations-workspace');
 }

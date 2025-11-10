@@ -3,7 +3,7 @@
 # MCP Server Configuration Validator
 # Checks all MCP servers for proper configuration
 
-WORKSPACE_ROOT="/Users/mmaruthurnew/Desktop/medical-practice-workspace"
+WORKSPACE_ROOT="/Users/mmaruthurnew/Desktop/operations-workspace"
 MCP_JSON="$WORKSPACE_ROOT/.mcp.json"
 SERVERS_DIR="$WORKSPACE_ROOT/local-instances/mcp-servers"
 CONFIG_DIR="$WORKSPACE_ROOT/configuration"

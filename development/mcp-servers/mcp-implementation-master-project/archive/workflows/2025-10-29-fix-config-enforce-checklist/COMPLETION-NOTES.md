@@ -7,7 +7,7 @@
 **Task 1-3: Configuration Verification**
 - ✅ testing-validation-mcp registered in ~/.claude.json (global config only)
 - ✅ No workspace .mcp.json exists (compliant with standards)
-- ✅ Absolute paths used: /Users/mmaruthurnew/Desktop/medical-practice-workspace/local-instances/mcp-servers/testing-validation-mcp-server/dist/server.js
+- ✅ Absolute paths used: /Users/mmaruthurnew/Desktop/operations-workspace/local-instances/mcp-servers/testing-validation-mcp-server/dist/server.js
 - ✅ Points to dist/server.js (compiled output)
 - ✅ File exists and is accessible
 - ✅ Environment variables properly set
