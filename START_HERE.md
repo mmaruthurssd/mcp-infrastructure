@@ -224,18 +224,24 @@ git push
 
 ### On First Run
 
-**Read these files in order:**
+**Follow the 6-step initialization path**:
 
-1. **workspace-management/AI-WORKSPACE-INITIALIZATION.md** - What to do when dropped into this workspace
-2. **workspace-management/AI-GUIDELINES-BY-WORKSPACE.md** - Detailed permissions
-3. **README.md** - MCP server architecture
-4. **workspace-management/MCP-CONFIGURATION-GUIDE.md** - Config setup
+1. **START_HERE.md** (this file) - Identify workspace and permissions
+2. **workspace-management/AI-WORKSPACE-INITIALIZATION.md** - Detailed initialization steps
+3. **workspace-management/DOCUMENTATION-INDEX.md** - Complete documentation map with reading order
+4. **workspace-management/AI-GUIDELINES-BY-WORKSPACE.md** - Detailed permissions for each workspace
+5. **EVENT_LOG.md** - Recent changes and decisions (check last 50 lines)
+6. **README.md** - MCP server architecture and configuration
+
+**For task-specific guidance**: See DOCUMENTATION-INDEX.md > "Before Working With..." section
 
 ### Quick Checklist
 
 - [ ] Confirmed I'm in mcp-infrastructure (pwd shows ~/Desktop/mcp-infrastructure)
 - [ ] Understand PHI is PROHIBITED here
 - [ ] Understand changes affect BOTH Claude Code AND Gemini
+- [ ] Read AI-WORKSPACE-INITIALIZATION.md for complete initialization
+- [ ] Checked DOCUMENTATION-INDEX.md for reading order
 - [ ] Know to test in development/ before deploying to local-instances/
 - [ ] Understand dual-config requirement (~/.claude.json AND .gemini-mcp.json)
 

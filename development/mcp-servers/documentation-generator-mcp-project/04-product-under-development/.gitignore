@@ -1,8 +1,0 @@
-node_modules/
-build/
-dist/
-coverage/
-*.log
-.DS_Store
-.env
-*.tgz
