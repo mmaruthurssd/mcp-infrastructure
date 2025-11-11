@@ -1,0 +1,120 @@
+{
+  "version": "1.0",
+  "projectName": "Deployment & Release MCP",
+  "created": "2025-10-30T18:38:50.131Z",
+  "lastUpdated": "2025-10-30T19:32:54.599Z",
+  "currentPhase": "initialization",
+  "currentStep": "create-structure",
+  "phases": {
+    "initialization": {
+      "status": "in-progress",
+      "startedAt": "2025-10-30T18:38:50.131Z",
+      "steps": [
+        {
+          "name": "create-structure",
+          "status": "in-progress"
+        },
+        {
+          "name": "generate-constitution",
+          "status": "pending"
+        },
+        {
+          "name": "identify-stakeholders",
+          "status": "pending"
+        },
+        {
+          "name": "identify-resources",
+          "status": "pending"
+        },
+        {
+          "name": "generate-roadmap",
+          "status": "pending"
+        }
+      ]
+    },
+    "goal-development": {
+      "status": "pending",
+      "steps": [
+        {
+          "name": "brainstorm-ideas",
+          "status": "pending"
+        },
+        {
+          "name": "evaluate-goals",
+          "status": "pending"
+        },
+        {
+          "name": "create-potential-goals",
+          "status": "pending"
+        },
+        {
+          "name": "promote-to-selected",
+          "status": "pending"
+        }
+      ]
+    },
+    "execution": {
+      "status": "pending",
+      "steps": [
+        {
+          "name": "create-specification",
+          "status": "pending"
+        },
+        {
+          "name": "create-tasks",
+          "status": "pending"
+        },
+        {
+          "name": "execute-workflow",
+          "status": "pending"
+        },
+        {
+          "name": "update-progress",
+          "status": "pending"
+        }
+      ]
+    },
+    "completion": {
+      "status": "pending",
+      "steps": [
+        {
+          "name": "validate-deliverables",
+          "status": "pending"
+        },
+        {
+          "name": "complete-documentation",
+          "status": "pending"
+        },
+        {
+          "name": "archive-goals",
+          "status": "pending"
+        },
+        {
+          "name": "wrap-up-project",
+          "status": "pending"
+        }
+      ]
+    }
+  },
+  "goals": {
+    "potential": [],
+    "selected": [],
+    "completed": []
+  },
+  "integrations": {
+    "specDriven": {
+      "used": true,
+      "lastHandoff": "2025-10-30T19:32:47.528Z",
+      "goalsWithSpecs": [
+        "goal-01"
+      ]
+    },
+    "taskExecutor": {
+      "activeWorkflows": [
+        "goal-01-implementation"
+      ],
+      "lastCreated": "2025-10-30T19:32:54.599Z",
+      "totalWorkflowsCreated": 1
+    }
+  }
+}

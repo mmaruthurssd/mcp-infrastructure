@@ -1,0 +1,96 @@
+{
+  "version": "1.0",
+  "workflowType": "task-executor",
+  "name": "parallelization-mcp-bug-fixes",
+  "created": "2025-10-30T01:55:20.998Z",
+  "lastUpdated": "2025-10-30T01:55:20.998Z",
+  "currentPhase": "execution",
+  "currentStep": "task-execution",
+  "phases": {
+    "execution": {
+      "status": "in-progress",
+      "startedAt": "2025-10-30T01:55:20.998Z",
+      "steps": []
+    }
+  },
+  "customData": {
+    "tasks": [
+      {
+        "id": "1",
+        "description": "Test detect_conflicts with missing changes field (Bug 1)",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.08
+      },
+      {
+        "id": "2",
+        "description": "Test optimize_batch_distribution with JSON-deserialized graph (Bug 2)",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.08
+      },
+      {
+        "id": "3",
+        "description": "Fix implicit dependency detection in create_dependency_graph",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.17
+      },
+      {
+        "id": "4",
+        "description": "Fix duplicate task detection in create_dependency_graph",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.17
+      },
+      {
+        "id": "5",
+        "description": "Update documentation with bug fixes and improvements",
+        "status": "pending",
+        "complexity": {
+          "score": 2,
+          "level": "trivial",
+          "emoji": "🟢"
+        },
+        "estimatedHours": 0.17
+      }
+    ],
+    "constraints": [],
+    "context": {
+      "category": "bug-fix",
+      "phiHandling": false,
+      "estimatedHours": 0.67
+    },
+    "documentation": {
+      "existing": [
+        "docs/"
+      ],
+      "needsUpdate": [],
+      "updated": []
+    },
+    "metadata": {
+      "totalTasks": 5,
+      "completedTasks": 0,
+      "verifiedTasks": 0,
+      "percentComplete": 0,
+      "lastUpdated": "2025-10-30T01:55:20.998Z"
+    }
+  },
+  "phase": "execution"
+}

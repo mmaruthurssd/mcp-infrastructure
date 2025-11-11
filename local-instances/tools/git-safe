@@ -1,0 +1,31 @@
+#!/bin/bash
+# Safe Git Wrapper - Prevents concurrent git operations
+# Usage: git-safe status  (instead of: git status)
+
+LOCK_FILE="/Users/mmaruthurnew/Desktop/medical-practice-workspace/.git/claude-git.lock"
+TIMEOUT=30
+
+# Try to acquire lock
+attempt=0
+while [ $attempt -lt $TIMEOUT ]; do
+    if mkdir "$LOCK_FILE" 2>/dev/null; then
+        # Lock acquired
+        trap "rmdir '$LOCK_FILE' 2>/dev/null" EXIT
+
+        # Run the actual git command
+        git "$@"
+        exit_code=$?
+
+        # Release lock
+        rmdir "$LOCK_FILE" 2>/dev/null
+        exit $exit_code
+    fi
+
+    # Lock not available, wait
+    sleep 0.1
+    attempt=$((attempt + 1))
+done
+
+echo "ERROR: Could not acquire git lock after ${TIMEOUT}s. Another Claude session may be using git."
+echo "Wait a moment or run: rmdir '$LOCK_FILE'"
+exit 1

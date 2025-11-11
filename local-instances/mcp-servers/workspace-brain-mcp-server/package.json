@@ -1,0 +1,30 @@
+{
+  "name": "workspace-brain-mcp",
+  "version": "1.3.0",
+  "description": "External storage and intelligence layer MCP server with cost tracking and ROI analytics",
+  "main": "build/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && npm run chmod",
+    "chmod": "chmod +x build/index.js",
+    "dev": "tsc --watch",
+    "lint": "eslint src --ext .ts",
+    "test": "echo 'Tests coming in Phase 2'"
+  },
+  "keywords": [
+    "mcp",
+    "workspace-brain",
+    "telemetry",
+    "analytics",
+    "intelligence-layer"
+  ],
+  "author": "Workspace Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
+  }
+}

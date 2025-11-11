@@ -1,0 +1,259 @@
+{
+  "$schema": "./config-schema.json",
+  "version": "2.0.0",
+  "templateVersion": "1.0.0",
+
+  "workspace": {
+    "name": "{{AUTO_DETECT:workspace_name}}",
+    "root": "{{AUTO_DETECT:workspace_root}}",
+    "type": "{{AUTO_DETECT:workspace_type}}"
+  },
+
+  "workspace_structure": {
+    "development_dir": "{{AUTO_DETECT:development/}}",
+    "production_dir": "{{AUTO_DETECT:local-instances/}}",
+    "archive_dir": "{{AUTO_DETECT:archive/}}",
+    "frameworks_dir": "{{AUTO_DETECT:development/frameworks/}}",
+    "templates_dir": "{{AUTO_DETECT:templates-and-patterns/}}",
+
+    "documentation_roots": "{{AUTO_DETECT:documentation_files}}",
+
+    "critical_docs": [
+      "README.md",
+      "WORKSPACE_GUIDE.md",
+      "WORKSPACE_ARCHITECTURE.md",
+      "SECURITY_BEST_PRACTICES.md",
+      "CONTRIBUTING.md"
+    ],
+
+    "_comments": {
+      "development_dir": "Where staging environments are built (e.g., development/mcp-servers/)",
+      "production_dir": "Where production instances run (e.g., local-instances/mcp-servers/)",
+      "archive_dir": "Where historical/obsolete files are stored",
+      "frameworks_dir": "Location of reusable frameworks that might supersede docs",
+      "templates_dir": "Location of templates and patterns",
+      "critical_docs": "Files that should NEVER be auto-archived, always require manual review"
+    }
+  },
+
+  "detection_patterns": {
+    "supersession_keywords": [
+      "superseded",
+      "deprecated",
+      "see instead",
+      "replaced by",
+      "obsolete",
+      "no longer maintained",
+      "archived",
+      "use .* instead"
+    ],
+
+    "framework_indicators": [
+      {
+        "path_pattern": "*/frameworks/*",
+        "weight": 0.9,
+        "description": "File in frameworks directory"
+      },
+      {
+        "path_pattern": "*/patterns/*",
+        "weight": 0.8,
+        "description": "File in patterns directory"
+      },
+      {
+        "file_pattern": "*-FRAMEWORK.md",
+        "weight": 0.85,
+        "description": "Framework documentation file"
+      },
+      {
+        "file_pattern": "*-FRAMEWORK/**",
+        "weight": 0.85,
+        "description": "Framework directory"
+      },
+      {
+        "file_pattern": "*-PATTERN.md",
+        "weight": 0.8,
+        "description": "Pattern documentation file"
+      }
+    ],
+
+    "redundancy_threshold": 0.60,
+    "staleness_months": 12,
+    "staleness_exemptions": [
+      "CHANGELOG.md",
+      "HISTORY.md",
+      "ARCHIVE.md",
+      "MIGRATION.md"
+    ],
+
+    "_comments": {
+      "supersession_keywords": "Text patterns that indicate a doc has been superseded",
+      "framework_indicators": "Path/file patterns that identify frameworks (weighted)",
+      "redundancy_threshold": "Minimum content overlap (0-1) to flag as redundant",
+      "staleness_months": "Age in months after which docs may be considered stale",
+      "staleness_exemptions": "Files exempt from staleness checks (historical by nature)"
+    }
+  },
+
+  "confidence_weights": {
+    "patternMatch": 0.30,
+    "historicalSuccess": 0.25,
+    "complexityPenalty": 0.15,
+    "reversibility": 0.15,
+    "contextClarity": 0.15,
+
+    "_comments": {
+      "patternMatch": "How well issue matches known detection patterns",
+      "historicalSuccess": "Success rate from past similar operations (learned)",
+      "complexityPenalty": "Penalty for complex operations (inverted, simple = higher confidence)",
+      "reversibility": "How easily the operation can be undone",
+      "contextClarity": "How clear the replacement/target/action is",
+      "_note": "All weights must sum to 1.0. Adjust based on workspace priorities."
+    }
+  },
+
+  "thresholds": {
+    "auto_execute": "{{AUTO_DETECT:maturity_threshold}}",
+    "assisted_mode_min": 0.70,
+    "report_only_max": 0.70,
+
+    "_comments": {
+      "auto_execute": "Confidence >= this threshold: auto-execute without approval (0.85 mature, 0.95 new)",
+      "assisted_mode_min": "Confidence >= this: show preview, require approval",
+      "report_only_max": "Confidence < this: report but don't suggest execution",
+      "_new_workspace": "Start with 0.95, lower to 0.85 after learning (2-4 weeks)",
+      "_mature_workspace": "Can start with 0.85 if has learning history"
+    }
+  },
+
+  "automation": {
+    "auto_execute_enabled": true,
+    "require_approval_first_time": true,
+    "enable_scheduled_scans": false,
+    "scheduled_scan_cron": "0 9 * * 1",
+    "enable_git_hooks": false,
+    "enable_post_operation_hooks": false,
+
+    "_comments": {
+      "auto_execute_enabled": "Master switch - if false, all operations require approval",
+      "require_approval_first_time": "Even if confidence >= threshold, require approval for new patterns",
+      "enable_scheduled_scans": "Weekly documentation health scans (Monday 9 AM)",
+      "scheduled_scan_cron": "Cron expression for scheduled scans",
+      "enable_git_hooks": "Pre-commit warnings for documentation issues",
+      "enable_post_operation_hooks": "Trigger after project-management.wrap_up_project(), etc.",
+      "_recommendation": "Start with all automation DISABLED, enable after observing patterns"
+    }
+  },
+
+  "learning": {
+    "enable_workspace_brain_integration": false,
+    "pattern_export_path": "{{workspace_structure.archive_dir}}/learned-patterns/",
+    "auto_import_patterns_on_startup": false,
+    "confidence_adjustment_magnitude": 0.05,
+    "min_operations_before_learning": 3,
+
+    "_comments": {
+      "enable_workspace_brain_integration": "Log operations to workspace-brain-mcp for learning",
+      "pattern_export_path": "Where to save learned patterns for portability",
+      "auto_import_patterns_on_startup": "Load learned patterns from archive on startup",
+      "confidence_adjustment_magnitude": "Max adjustment per operation (+/- 0.05)",
+      "min_operations_before_learning": "Minimum operations before adjusting confidence weights"
+    }
+  },
+
+  "performance": {
+    "cache_ttl_seconds": 3600,
+    "incremental_scan_enabled": true,
+    "parallel_processing_enabled": true,
+    "max_scan_time_seconds": 30,
+    "max_parallel_operations": 5,
+
+    "_comments": {
+      "cache_ttl_seconds": "How long to cache file content analysis (1 hour default)",
+      "incremental_scan_enabled": "Only re-scan changed files (uses git diff)",
+      "parallel_processing_enabled": "Analyze multiple directories concurrently",
+      "max_scan_time_seconds": "Timeout for comprehensive scans",
+      "max_parallel_operations": "Max concurrent file operations"
+    }
+  },
+
+  "templates": {
+    "replacement_after_archival": "templates/replacement-after-archival.md",
+    "consolidated_doc": "templates/consolidated-doc.md",
+    "framework_overview": "templates/framework-overview.md",
+
+    "_comments": {
+      "replacement_after_archival": "Template for minimal replacement doc after archiving superseded files",
+      "consolidated_doc": "Template for merged documentation from multiple sources",
+      "framework_overview": "Template for creating framework overview docs"
+    }
+  },
+
+  "operations": {
+    "backup_before_operations": true,
+    "backup_path_template": "{{workspace_structure.archive_dir}}/backups/{{operation}}-{{timestamp}}/",
+    "dry_run_by_default": true,
+    "validate_markdown_syntax": true,
+    "validate_links": true,
+    "git_commit_operations": false,
+    "git_commit_message_template": "docs: {{operation}} - {{summary}}\n\nAutonomous documentation management (workspace-index-mcp)\nConfidence: {{confidence}}\nFiles affected: {{file_count}}",
+
+    "_comments": {
+      "backup_before_operations": "Always create backup before archive/consolidate/modify",
+      "dry_run_by_default": "execute_documentation_operation() defaults to dryRun: true",
+      "validate_markdown_syntax": "Check markdown is valid after operations",
+      "validate_links": "Check internal links aren't broken after operations",
+      "git_commit_operations": "Auto-commit successful operations",
+      "git_commit_message_template": "Template for auto-generated commit messages"
+    }
+  },
+
+  "integrations": {
+    "workspace_brain": {
+      "enabled": false,
+      "event_type": "documentation-operation",
+      "log_all_operations": true,
+      "log_failed_operations": true
+    },
+    "project_management": {
+      "enabled": false,
+      "trigger_after_wrap_up": true,
+      "trigger_after_archive": true
+    },
+    "learning_optimizer": {
+      "enabled": false,
+      "track_as_domain": "documentation-lifecycle",
+      "promote_frequent_issues": true,
+      "frequency_threshold": 5
+    },
+
+    "_comments": {
+      "workspace_brain": "Integration with workspace-brain-mcp for learning",
+      "project_management": "Integration with project-management-mcp for hooks",
+      "learning_optimizer": "Integration with learning-optimizer-mcp for pattern tracking"
+    }
+  },
+
+  "logging": {
+    "level": "info",
+    "log_operations": true,
+    "log_detections": false,
+    "log_performance": false,
+    "log_file": "~/.claude-code/logs/mcp-server-workspace-index.log",
+
+    "_comments": {
+      "level": "debug | info | warn | error",
+      "log_operations": "Log all archive/consolidate/create operations",
+      "log_detections": "Log all detected issues (can be verbose)",
+      "log_performance": "Log scan times and performance metrics"
+    }
+  },
+
+  "_metadata": {
+    "config_version": "2.0.0",
+    "created_by": "auto-configuration",
+    "created_at": "{{AUTO_DETECT:timestamp}}",
+    "workspace_maturity": "{{AUTO_DETECT:maturity}}",
+    "last_updated": "{{AUTO_DETECT:timestamp}}",
+    "customization_notes": "This config was auto-generated by detecting workspace structure. Review and adjust thresholds based on workspace needs."
+  }
+}

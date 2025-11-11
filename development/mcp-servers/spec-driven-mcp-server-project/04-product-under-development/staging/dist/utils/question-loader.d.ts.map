@@ -1,0 +1,1 @@
+{"version":3,"file":"question-loader.d.ts","sourceRoot":"","sources":["../../src/utils/question-loader.ts"],"names":[],"mappings":"AAAA;;GAEG;AAKH,OAAO,EAAE,WAAW,EAAE,QAAQ,EAAE,YAAY,EAAE,MAAM,aAAa,CAAC;AAKlE,qBAAa,cAAc;IACzB,OAAO,CAAC,YAAY,CAAS;;IAM7B;;OAEG;IACH,IAAI,CAAC,IAAI,EAAE,YAAY,EAAE,QAAQ,EAAE,QAAQ,GAAG,WAAW,GAAG,IAAI;CAejE"}

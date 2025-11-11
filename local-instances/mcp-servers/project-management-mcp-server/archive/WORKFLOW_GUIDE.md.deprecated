@@ -1,0 +1,1111 @@
+---
+type: guide
+phase: stable
+project: ai-planning-mcp-server
+tags: [workflow, tutorial, user-guide, goal-lifecycle]
+category: mcp-servers
+status: completed
+priority: high
+---
+
+# AI Planning MCP Server - Complete Workflow Guide
+
+**Version:** 0.5.0
+**Last Updated:** 2025-10-26
+
+## Overview
+
+This guide provides a complete start-to-finish workflow demonstrating how the AI Planning MCP Server facilitates comprehensive goal lifecycle management. The server provides 11 tools across 5 phases that work together to transform ideas into completed projects.
+
+---
+
+## The Complete Goal Lifecycle
+
+```
+IDEATION → PRIORITIZATION → EXECUTION → MONITORING → RETROSPECTIVE
+    ↓            ↓              ↓           ↓            ↓
+ Phase 1      Phase 2        Phase 3     Phase 4      Phase 4
+ Phase 5      Phase 5        Phase 5     Phase 5      Phase 5
+(Brainstorm) (Prioritize)   (Track)     (Review)    (Archive)
+```
+
+---
+
+## Phase 1: Ideation & Brainstorming
+
+### Starting Point: New Project or Feature Idea
+
+**Scenario:** You have a new project idea or feature request that needs to be captured and explored.
+
+### Tool 1: `brainstorm_goal`
+
+**Purpose:** Generate comprehensive goal ideas from brief descriptions
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  description: "Build a patient portal for our medical practice",
+  brainstormType: "project",     // or "feature"
+  numIdeas: 5,
+  focusArea: "Healthcare Technology"
+}
+```
+
+**What Happens:**
+1. AI analyzes the description and context
+2. Generates multiple goal variations exploring different angles
+3. Each idea includes:
+   - Goal name
+   - Full description
+   - Impact/effort estimates
+   - Suggested owner
+   - Dependencies
+   - Success metrics
+
+**Output Example:**
+```yaml
+ideas:
+  - name: "Patient Portal - Phase 1: Basic Access"
+    description: "HIPAA-compliant web portal for viewing medical records..."
+    impactScore: "High"
+    effortScore: "High"
+    suggestedOwner: "Engineering Team"
+    dependencies: []
+    successMetrics:
+      - "80% patient adoption within 6 months"
+      - "Zero security incidents"
+
+  - name: "Patient Portal - Mobile-First Approach"
+    description: "Native mobile app for iOS/Android..."
+    impactScore: "High"
+    effortScore: "Very High"
+    ...
+```
+
+**File Created:** `potential-goals/patient-portal-basic-access.md` (and 4 others)
+
+**Next Step:** Review generated ideas and decide which to prioritize
+
+---
+
+## Phase 2: Prioritization & Selection
+
+### Tool 2: `list_potential_goals`
+
+**Purpose:** View all brainstormed ideas waiting for prioritization
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  sortBy: "impactScore",
+  filterImpact: "High",
+  limit: 10
+}
+```
+
+**What Happens:**
+- Scans `potential-goals/` directory
+- Parses all goal files
+- Filters and sorts by criteria
+- Returns ranked list
+
+**Output:**
+```typescript
+{
+  success: true,
+  goals: [
+    {
+      id: "patient-portal-basic-access",
+      name: "Patient Portal - Phase 1: Basic Access",
+      impactScore: "High",
+      effortScore: "High",
+      tier: null,  // Not yet prioritized
+      status: "Potential"
+    },
+    // ... more goals
+  ],
+  total: 5
+}
+```
+
+### Tool 3: `prioritize_goal`
+
+**Purpose:** Promote a potential goal to selected status with tier assignment
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  goalId: "patient-portal-basic-access",
+  tier: "Now",
+  priority: "High",
+  assignOwner: "Dr. Smith",
+  setDueDate: "2025-12-31"
+}
+```
+
+**What Happens:**
+1. Reads goal from `potential-goals/patient-portal-basic-access.md`
+2. Updates metadata:
+   - tier: "Now"
+   - priority: "High"
+   - status: "Not Started" → "Planning"
+   - owner: "Dr. Smith"
+   - dueDate: "2025-12-31"
+3. Moves file to `selected-goals/patient-portal-basic-access.md`
+
+**Visual Representation (Kanban):**
+```
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│  POTENTIAL   │  │     NOW      │  │     NEXT     │
+├──────────────┤  ├──────────────┤  ├──────────────┤
+│ [4 ideas]    │  │ ✓ Patient    │  │              │
+│              │  │   Portal     │  │              │
+│              │  │   (High)     │  │              │
+└──────────────┘  └──────────────┘  └──────────────┘
+```
+
+**Next Step:** Begin execution or continue prioritizing more goals
+
+---
+
+## Phase 3: Execution & Tracking
+
+### Tool 4: `list_selected_goals`
+
+**Purpose:** View all goals in active tiers (Now/Next/Later/Someday)
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  tier: "Now",
+  status: "In Progress",
+  sortBy: "priority"
+}
+```
+
+**Output:**
+```typescript
+{
+  success: true,
+  goals: [
+    {
+      id: "patient-portal-basic-access",
+      name: "Patient Portal - Phase 1: Basic Access",
+      tier: "Now",
+      priority: "High",
+      status: "In Progress",
+      progress: 35,
+      owner: "Dr. Smith",
+      dueDate: "2025-12-31"
+    }
+  ],
+  summary: {
+    total: 1,
+    byTier: { Now: 1, Next: 0, Later: 0, Someday: 0 },
+    byStatus: { "In Progress": 1, "Not Started": 0, Completed: 0 }
+  }
+}
+```
+
+### Tool 5: `update_goal_progress`
+
+**Purpose:** Track progress and update goal status
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  goalId: "patient-portal-basic-access",
+  progress: 35,
+  status: "In Progress",
+  notes: "Authentication module complete. Working on patient data API.",
+  updateLastReviewed: true
+}
+```
+
+**What Happens:**
+1. Updates goal file with new progress percentage
+2. Changes status if needed
+3. Adds timestamped note to changelog
+4. Updates lastReviewed timestamp
+
+**File Changes:**
+```yaml
+# selected-goals/patient-portal-basic-access.md
+progress: 35
+status: In Progress
+lastReviewed: 2025-10-26
+changelog:
+  - date: 2025-10-26
+    note: "Authentication module complete. Working on patient data API."
+```
+
+### Tool 6: `change_goal_tier`
+
+**Purpose:** Reprioritize goals by moving between tiers
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  goalId: "patient-portal-basic-access",
+  newTier: "Next",
+  reason: "Dependencies on HIPAA compliance review - moving to Next tier"
+}
+```
+
+**What Happens:**
+1. Updates tier field in goal file
+2. Records reason in changelog
+3. Adjusts priority if needed based on tier
+
+**Roadmap Visualization:**
+```
+NOW               NEXT              LATER
+┌───────────┐    ┌───────────┐    ┌───────────┐
+│           │    │ Patient   │    │           │
+│           │    │ Portal    │    │           │
+│           │    │ (blocked) │    │           │
+└───────────┘    └───────────┘    └───────────┘
+```
+
+### Tool 7: `get_goal_statistics`
+
+**Purpose:** Get project-wide metrics and insights
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  timePeriod: "monthly",
+  includeVelocity: true
+}
+```
+
+**Output:**
+```typescript
+{
+  success: true,
+  statistics: {
+    totalPotential: 4,
+    totalSelected: 8,
+    totalArchived: 2,
+
+    byTier: {
+      Now: 2,
+      Next: 3,
+      Later: 2,
+      Someday: 1
+    },
+
+    byStatus: {
+      "Not Started": 2,
+      "In Progress": 4,
+      "Blocked": 1,
+      "Completed": 1
+    },
+
+    averageProgress: 42,
+    recentlyCompleted: 1,
+    recentlyAdded: 3
+  },
+
+  velocityData: {
+    averageCompletionTime: "3-4 weeks",
+    estimatedCompletionDate: "8 months",
+    trend: "improving"
+  }
+}
+```
+
+**Use Cases:**
+- Weekly standup metrics
+- Monthly progress reports
+- Capacity planning
+- Identifying bottlenecks
+
+---
+
+## Phase 4: Monitoring & Health Checks
+
+### Tool 8: `check_review_needed`
+
+**Purpose:** Automatically detect goals requiring attention
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  checkType: "selected",
+  customThresholds: {
+    staleSelectedDays: 21,      // Default: 30
+    noProgressDays: 10           // Default: 14
+  }
+}
+```
+
+**What Happens:**
+1. Scans all selected goals
+2. Checks 5 criteria:
+   - **Stale Potential:** Goals in potential-goals/ > 90 days
+   - **Stale Selected:** Goals in selected-goals/ untouched > 30 days
+   - **Long Running:** In Progress > 60 days
+   - **No Progress:** No updates > 14 days
+   - **Blocked:** Blocked status > 30 days
+3. Calculates urgency scores
+4. Generates recommendations
+
+**Output:**
+```typescript
+{
+  success: true,
+  reviewsNeeded: [
+    {
+      goalId: "patient-portal-basic-access",
+      goalName: "Patient Portal - Phase 1",
+      reason: "no_progress",
+      daysStale: 18,
+      urgency: "high",
+      recommendation: "Goal has made no progress in 18 days. Consider: 1) Checking for blockers, 2) Re-assigning owner, 3) Moving to Later tier"
+    }
+  ],
+  summary: {
+    total: 1,
+    byReason: { no_progress: 1 },
+    byUrgency: { high: 1, medium: 0, low: 0 }
+  }
+}
+```
+
+**Proactive Use:**
+- Run weekly as automated health check
+- Trigger alerts for high urgency items
+- Integrate with project management tools
+
+### Tool 9: `generate_review_report`
+
+**Purpose:** Generate comprehensive health and progress reports
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  reportType: "weekly",
+  sections: ["summary", "health", "velocity", "alerts", "recommendations"]
+}
+```
+
+**Output Structure:**
+```typescript
+{
+  success: true,
+  report: {
+    metadata: {
+      generatedAt: "2025-10-26T10:30:00Z",
+      reportType: "weekly",
+      period: { start: "2025-10-19", end: "2025-10-26" }
+    },
+
+    summary: {
+      totalGoals: 14,
+      activeGoals: 8,
+      completedThisPeriod: 1,
+      newGoalsAdded: 2,
+      averageProgress: 42
+    },
+
+    healthScore: {
+      totalScore: 78,
+      grade: "B",
+      components: {
+        activityScore: 24,    // 0-30 points
+        balanceScore: 16,     // 0-20 points
+        reviewScore: 21,      // 0-30 points
+        completionScore: 17   // 0-20 points
+      },
+      interpretation: "Good overall health. Activity is strong but some goals need attention."
+    },
+
+    velocityData: {
+      averageCompletionTime: "3-4 weeks",
+      estimatedCompletionDate: "7 months for current workload",
+      trend: "improving",
+      recentCompletions: 1
+    },
+
+    alerts: [
+      {
+        severity: "high",
+        goalId: "patient-portal-basic-access",
+        issue: "No progress in 18 days",
+        recommendation: "Check for blockers or reassign"
+      }
+    ],
+
+    recommendations: [
+      "Consider archiving completed goal 'authentication-module'",
+      "Review blocked goal 'hipaa-compliance' - blocked for 32 days",
+      "3 potential goals ready for prioritization"
+    ],
+
+    topPerformers: [
+      { goalId: "auth-module", completedIn: "14 days", variance: "+3 days" }
+    ]
+  },
+
+  reportPath: "/path/to/project/reports/weekly-review-2025-10-26.md"
+}
+```
+
+**Health Score Algorithm:**
+
+1. **Activity Score (0-30 points):**
+   - Goals completed recently: +10
+   - Goals in progress: +10
+   - Low stale goal ratio: +10
+
+2. **Balance Score (0-20 points):**
+   - Good tier distribution: +10
+   - Reasonable workload: +10
+
+3. **Review Score (0-30 points):**
+   - No overdue reviews: +15
+   - Low urgency alerts: +15
+
+4. **Completion Score (0-20 points):**
+   - Completion rate vs. velocity: +10
+   - Low long-running goals: +10
+
+**Grades:**
+- **A (90-100):** Excellent goal management
+- **B (80-89):** Good health, minor improvements needed
+- **C (70-79):** Moderate issues, review needed
+- **D (60-69):** Significant problems, intervention required
+- **F (<60):** Critical issues, major restructuring needed
+
+### Tool 10: `archive_goal`
+
+**Purpose:** Archive completed or shelved goals with retrospective analysis
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  goalId: "authentication-module",
+  archiveReason: "completed",
+  retrospective: {
+    whatWorked: [
+      "Clear API design upfront",
+      "Weekly security reviews"
+    ],
+    whatDidntWork: [
+      "Underestimated OAuth integration complexity"
+    ],
+    lessonsLearned: [
+      "Budget 2x time for third-party auth integrations"
+    ],
+    estimateAccuracy: "off_by_more",
+    actualEffort: "Very High",
+    wouldDoAgain: "yes_with_changes"
+  }
+}
+```
+
+**What Happens:**
+1. Validates goal exists in selected-goals/
+2. Creates comprehensive archive entry
+3. Moves to `archived-goals/YYYY-MM/authentication-module.md`
+4. Records retrospective data for learning
+5. Updates project statistics
+
+**Archive File Structure:**
+```yaml
+---
+id: authentication-module
+name: "Authentication Module"
+archivedAt: 2025-10-26
+archivedBy: "system"
+archiveReason: completed
+
+originalMetadata:
+  tier: Now
+  priority: High
+  estimatedEffort: High
+  estimatedImpact: High
+
+actualMetrics:
+  completedIn: 28 days
+  finalProgress: 100
+  actualEffort: Very High
+
+retrospective:
+  whatWorked:
+    - Clear API design upfront
+    - Weekly security reviews
+
+  whatDidntWork:
+    - Underestimated OAuth integration complexity
+
+  lessonsLearned:
+    - Budget 2x time for third-party auth integrations
+
+  estimateAccuracy: off_by_more
+  wouldDoAgain: yes_with_changes
+---
+
+# Authentication Module
+
+[Original goal content preserved...]
+```
+
+**Learning Database:**
+- Retrospectives inform future effort estimates
+- Pattern recognition for similar goals
+- Team capability assessment
+- Technology-specific insights
+
+---
+
+## Phase 5: Visualization & Communication
+
+### Tool 11: `generate_goals_diagram`
+
+**Purpose:** Create visual workflow diagrams in draw.io format
+
+**Three Layout Types:**
+
+#### 1. Roadmap Layout (Horizontal Flow by Tier)
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  diagramType: "roadmap",
+  outputPath: "/path/to/diagrams/goals-roadmap.drawio"
+}
+```
+
+**Visual Structure:**
+```
+┌─────────────┬─────────────┬─────────────┬─────────────┐
+│     NOW     │    NEXT     │    LATER    │   SOMEDAY   │
+├─────────────┼─────────────┼─────────────┼─────────────┤
+│ ┌─────────┐ │ ┌─────────┐ │ ┌─────────┐ │ ┌─────────┐ │
+│ │Patient  │ │ │Mobile   │ │ │Analytics│ │ │AI       │ │
+│ │Portal   │ │ │App      │ │ │Dashboard│ │ │Assistant│ │
+│ │━━━━━━━━━│ │ │━━━━━━━━━│ │ │━━━━━━━━━│ │ │━━━━━━━━━│ │
+│ │High/High│ │ │High/VHi │ │ │Med/Med  │ │ │High/VHi │ │
+│ │Dr. Smith│ │ │Team B   │ │ │Team C   │ │ │Research │ │
+│ │35% ███░░│ │ │0% ░░░░░░│ │ │0% ░░░░░░│ │ │0% ░░░░░░│ │
+│ └─────────┘ │ └─────────┘ │ └─────────┘ │ └─────────┘ │
+│             │             │             │             │
+│ ┌─────────┐ │ ┌─────────┐ │             │             │
+│ │Auth     │ │ │API      │ │             │             │
+│ │Module   │ │ │Gateway  │ │             │             │
+│ └─────────┘ │ └─────────┘ │             │             │
+└─────────────┴─────────────┴─────────────┴─────────────┘
+```
+
+**Color Coding:**
+- 🟢 Green: High Priority
+- 🟡 Yellow: Medium Priority
+- ⚪ Gray: Low Priority
+
+**Use Cases:**
+- Executive presentations
+- Quarterly planning meetings
+- Stakeholder communications
+
+#### 2. Kanban Layout (Column View)
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  diagramType: "kanban",
+  includePotential: true,
+  includeArchived: true
+}
+```
+
+**Visual Structure:**
+```
+┌───────────┬───────┬───────┬────────┬─────────┬──────────┐
+│ POTENTIAL │  NOW  │ NEXT  │ LATER  │SOMEDAY  │ ARCHIVED │
+├───────────┼───────┼───────┼────────┼─────────┼──────────┤
+│┌─────────┐│┌─────┐│┌─────┐│┌──────┐│┌───────┐│┌────────┐│
+││Mobile   │││Portal│││API  │││Analy-│││AI     │││Auth    ││
+││First    │││─────│││Gate-│││tics  │││Assist-│││Module  ││
+││         │││H/H  │││way  │││──────│││ant    │││────────││
+││         │││35%  │││─────│││M/M   │││──────│││Complete││
+│└─────────┘│└─────┘││H/VH │││0%    │││H/VH  │││28 days ││
+│┌─────────┐│       ││0%   │││      │││0%    │││        ││
+││Desktop  │││       │└─────┘│└──────┘│└───────┘│└────────┘│
+││App      │││       │       │        │         │          │
+│└─────────┘││       │       │        │         │          │
+│           ││       │       │        │         │          │
+│ [3 more]  ││       │       │        │         │          │
+└───────────┴───────┴───────┴────────┴─────────┴──────────┘
+```
+
+**Use Cases:**
+- Daily standups
+- Sprint planning
+- Progress tracking
+- Identifying bottlenecks
+
+#### 3. Timeline Layout (Gantt-Style)
+
+**Input:**
+```typescript
+{
+  projectPath: "/path/to/project",
+  diagramType: "timeline",
+  tier: "Now"  // Only show Now tier
+}
+```
+
+**Visual Structure:**
+```
+GOAL TIMELINE
+┌────────────────────┬──────────────────────────────────────────────┐
+│ GOAL               │ PROGRESS (0% ─────────────────── 100%)      │
+├────────────────────┼──────────────────────────────────────────────┤
+│ 1. Patient Portal  │ ████████████░░░░░░░░░░░░░░░░░░░░░░░░ 35%    │
+│                    │ [━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━]    │
+├────────────────────┼──────────────────────────────────────────────┤
+│ 2. Auth Module     │ ████████████████████████████████████ 100%   │
+│                    │ [━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━]    │
+├────────────────────┼──────────────────────────────────────────────┤
+│ 3. Mobile App      │ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0%   │
+│                    │ [━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━]    │
+└────────────────────┴──────────────────────────────────────────────┘
+```
+
+**Use Cases:**
+- Progress reports
+- Sprint reviews
+- Milestone tracking
+- Deadline visualization
+
+**Output:**
+```typescript
+{
+  success: true,
+  diagramPath: "/path/to/diagrams/goals-roadmap.drawio",
+  diagramType: "roadmap",
+  goalsIncluded: 8,
+  dimensions: { width: 1600, height: 900 },
+  openInstructions: "Open with draw.io desktop app or https://app.diagrams.net/"
+}
+```
+
+---
+
+## Complete Workflow Example: Medical Practice Patient Portal
+
+### Week 1: Ideation
+
+1. **Brainstorm** initial idea:
+   ```
+   brainstorm_goal({
+     description: "Build patient portal for medical practice",
+     brainstormType: "project",
+     numIdeas: 3
+   })
+   ```
+
+   **Generated:**
+   - Patient Portal - Basic Access
+   - Patient Portal - Mobile First
+   - Patient Portal - Telemedicine Integration
+
+2. **Review** potential goals:
+   ```
+   list_potential_goals({ sortBy: "impactScore" })
+   ```
+
+3. **Prioritize** top choice:
+   ```
+   prioritize_goal({
+     goalId: "patient-portal-basic-access",
+     tier: "Now",
+     priority: "High",
+     assignOwner: "Dr. Smith"
+   })
+   ```
+
+### Week 2-6: Execution
+
+4. **Track progress** weekly:
+   ```
+   update_goal_progress({
+     goalId: "patient-portal-basic-access",
+     progress: 15,  // Week 2
+     notes: "Authentication module started"
+   })
+
+   update_goal_progress({
+     goalId: "patient-portal-basic-access",
+     progress: 35,  // Week 4
+     notes: "Auth complete, patient data API in progress"
+   })
+   ```
+
+5. **Monitor** health weekly:
+   ```
+   check_review_needed({ checkType: "selected" })
+   ```
+
+6. **Generate** weekly reports:
+   ```
+   generate_review_report({
+     reportType: "weekly",
+     sections: ["summary", "health", "alerts"]
+   })
+   ```
+
+### Week 7: Blocked
+
+7. **Adjust** tier due to dependency:
+   ```
+   change_goal_tier({
+     goalId: "patient-portal-basic-access",
+     newTier: "Next",
+     reason: "Waiting for HIPAA compliance review"
+   })
+   ```
+
+8. **Visualize** roadmap for stakeholders:
+   ```
+   generate_goals_diagram({
+     diagramType: "roadmap",
+     outputPath: "diagrams/q4-roadmap.drawio"
+   })
+   ```
+
+### Week 8-12: Resume & Complete
+
+9. **Move back** to active:
+   ```
+   change_goal_tier({
+     goalId: "patient-portal-basic-access",
+     newTier: "Now",
+     reason: "HIPAA review complete"
+   })
+   ```
+
+10. **Complete** and track:
+    ```
+    update_goal_progress({
+      goalId: "patient-portal-basic-access",
+      progress: 100,
+      status: "Completed"
+    })
+    ```
+
+11. **Archive** with retrospective:
+    ```
+    archive_goal({
+      goalId: "patient-portal-basic-access",
+      archiveReason: "completed",
+      retrospective: {
+        whatWorked: [
+          "Clear security requirements upfront",
+          "Weekly progress reviews"
+        ],
+        whatDidntWork: [
+          "Underestimated third-party auth complexity"
+        ],
+        lessonsLearned: [
+          "Budget 2x for compliance-heavy features"
+        ],
+        estimateAccuracy: "off_by_more",
+        actualEffort: "Very High"
+      }
+    })
+    ```
+
+### Ongoing: Analytics & Learning
+
+12. **Review** statistics monthly:
+    ```
+    get_goal_statistics({
+      timePeriod: "monthly",
+      includeVelocity: true
+    })
+    ```
+
+13. **Generate** quarterly report:
+    ```
+    generate_review_report({
+      reportType: "quarterly",
+      sections: ["summary", "health", "velocity", "retrospective"]
+    })
+    ```
+
+---
+
+## Integration Patterns
+
+### 1. Automated Weekly Health Check
+
+```typescript
+// Run every Monday at 9 AM
+const healthCheckWorkflow = async () => {
+  // 1. Check for reviews needed
+  const reviews = await check_review_needed({
+    projectPath: PROJECT_PATH,
+    checkType: "all"
+  });
+
+  // 2. Generate weekly report
+  const report = await generate_review_report({
+    projectPath: PROJECT_PATH,
+    reportType: "weekly",
+    sections: ["summary", "health", "alerts", "recommendations"]
+  });
+
+  // 3. Send to Slack/Email if issues found
+  if (reviews.summary.byUrgency.high > 0) {
+    sendAlert({
+      severity: "high",
+      message: `${reviews.summary.byUrgency.high} goals need urgent attention`,
+      report: report.reportPath
+    });
+  }
+
+  // 4. Generate updated roadmap
+  await generate_goals_diagram({
+    projectPath: PROJECT_PATH,
+    diagramType: "kanban",
+    outputPath: "diagrams/current-week.drawio"
+  });
+};
+```
+
+### 2. Sprint Planning Workflow
+
+```typescript
+const sprintPlanningWorkflow = async () => {
+  // 1. Review statistics
+  const stats = await get_goal_statistics({
+    projectPath: PROJECT_PATH,
+    includeVelocity: true
+  });
+
+  // 2. Check capacity
+  const capacity = calculateSprintCapacity(stats.velocityData);
+
+  // 3. List available work
+  const nowTier = await list_selected_goals({
+    projectPath: PROJECT_PATH,
+    tier: "Now",
+    status: "Not Started"
+  });
+
+  const nextTier = await list_selected_goals({
+    projectPath: PROJECT_PATH,
+    tier: "Next",
+    sortBy: "priority"
+  });
+
+  // 4. Promote goals from Next to Now based on capacity
+  for (const goal of nextTier.goals.slice(0, capacity.availableSlots)) {
+    await change_goal_tier({
+      projectPath: PROJECT_PATH,
+      goalId: goal.id,
+      newTier: "Now",
+      reason: "Sprint planning - pulled into current sprint"
+    });
+  }
+
+  // 5. Generate sprint board
+  await generate_goals_diagram({
+    projectPath: PROJECT_PATH,
+    diagramType: "kanban",
+    tier: "Now",
+    outputPath: "diagrams/sprint-board.drawio"
+  });
+};
+```
+
+### 3. Ideation Session Workflow
+
+```typescript
+const ideationSessionWorkflow = async (ideas: string[]) => {
+  // 1. Brainstorm each idea
+  const generatedGoals = [];
+  for (const idea of ideas) {
+    const result = await brainstorm_goal({
+      projectPath: PROJECT_PATH,
+      description: idea,
+      brainstormType: "feature",
+      numIdeas: 3,
+      focusArea: DOMAIN
+    });
+    generatedGoals.push(...result.ideas);
+  }
+
+  // 2. List all potential goals
+  const allPotential = await list_potential_goals({
+    projectPath: PROJECT_PATH,
+    sortBy: "impactScore"
+  });
+
+  // 3. Generate visualization for review
+  await generate_goals_diagram({
+    projectPath: PROJECT_PATH,
+    diagramType: "kanban",
+    includePotential: true,
+    outputPath: "diagrams/ideation-review.drawio"
+  });
+
+  // 4. Team reviews and votes
+  // (External voting mechanism)
+
+  // 5. Prioritize top choices
+  for (const goalId of votingResults.topChoices) {
+    await prioritize_goal({
+      projectPath: PROJECT_PATH,
+      goalId: goalId,
+      tier: determineTier(goalId),
+      priority: determinePriority(goalId)
+    });
+  }
+};
+```
+
+---
+
+## Best Practices
+
+### 1. Goal Lifecycle Hygiene
+
+**Weekly:**
+- Run `check_review_needed()` to catch stale goals
+- Update progress on all In Progress goals
+- Generate health report
+
+**Bi-Weekly:**
+- Review potential goals and prioritize top choices
+- Archive completed goals with retrospectives
+
+**Monthly:**
+- Generate comprehensive monthly report
+- Review velocity and adjust estimates
+- Update roadmap diagram for stakeholders
+
+**Quarterly:**
+- Deep retrospective analysis
+- Tier rebalancing
+- Strategic planning with brainstorming session
+
+### 2. Health Score Targets
+
+| Grade | Score | Target Audience | Action Needed |
+|-------|-------|----------------|---------------|
+| A | 90-100 | Mature teams | Maintain practices |
+| B | 80-89 | Growing teams | Minor adjustments |
+| C | 70-79 | New teams | Review processes |
+| D | 60-69 | Struggling teams | Intervention required |
+| F | <60 | Crisis mode | Major restructuring |
+
+### 3. Tier Management
+
+**Now Tier:**
+- Maximum 3-5 goals
+- Review daily/weekly
+- High urgency items only
+
+**Next Tier:**
+- Maximum 5-8 goals
+- Review weekly
+- Ready to start when Now capacity opens
+
+**Later Tier:**
+- Maximum 10-15 goals
+- Review monthly
+- Planned but not immediate
+
+**Someday Tier:**
+- No limit
+- Review quarterly
+- Ideas worth keeping but not scheduled
+
+### 4. Retrospective Quality
+
+**Good Retrospective:**
+```yaml
+retrospective:
+  whatWorked:
+    - "Daily standups kept team aligned"
+    - "Early user testing caught UX issues"
+
+  whatDidntWork:
+    - "Assumed database migration would be trivial"
+    - "Underestimated design iteration time"
+
+  lessonsLearned:
+    - "Always test migrations in staging first"
+    - "Budget 50% more time for UI polish"
+    - "Involve QA from day 1, not at the end"
+
+  estimateAccuracy: off_by_more
+  actualEffort: Very High
+  wouldDoAgain: yes_with_changes
+```
+
+**Poor Retrospective:**
+```yaml
+retrospective:
+  whatWorked: ["Everything went well"]
+  whatDidntWork: ["Nothing major"]
+  lessonsLearned: ["N/A"]
+  estimateAccuracy: accurate
+```
+
+---
+
+## Summary: The Value Proposition
+
+### For Individual Contributors:
+- ✅ Clear view of priorities
+- ✅ Progress tracking automation
+- ✅ Reduced cognitive load
+- ✅ Learning from past work
+
+### For Team Leads:
+- ✅ Real-time health monitoring
+- ✅ Proactive problem detection
+- ✅ Data-driven decision making
+- ✅ Capacity planning tools
+
+### For Executives:
+- ✅ Visual roadmaps
+- ✅ Progress reports
+- ✅ Strategic alignment
+- ✅ Risk identification
+
+### For Organizations:
+- ✅ Institutional knowledge capture
+- ✅ Improved estimation accuracy
+- ✅ Consistent goal management
+- ✅ Scalable processes
+
+---
+
+## Next Steps
+
+1. **Install** the AI Planning MCP Server
+2. **Initialize** a project directory structure
+3. **Start** with a brainstorming session
+4. **Set up** automated weekly health checks
+5. **Generate** your first roadmap diagram
+6. **Iterate** and improve with retrospectives
+
+**Happy Planning!** 🎯

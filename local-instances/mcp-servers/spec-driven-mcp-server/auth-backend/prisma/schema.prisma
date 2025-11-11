@@ -1,0 +1,55 @@
+// Prisma Schema for Medical Practice Authentication
+// This file defines the database schema for user authentication and refresh tokens
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Model - Stores user account information
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String   // bcrypt hashed password
+  firstName     String
+  lastName      String
+  role          Role     @default(PATIENT)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  refreshTokens RefreshToken[]
+
+  @@index([email])
+  @@map("users")
+}
+
+// Refresh Token Model - Stores refresh tokens for JWT rotation
+model RefreshToken {
+  id          String   @id @default(uuid())
+  token       String   @unique
+  userId      String
+  expiresAt   DateTime
+  isRevoked   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  // Relationships
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+// Enum for User Roles
+enum Role {
+  ADMIN
+  PROVIDER
+  STAFF
+  PATIENT
+}

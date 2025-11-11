@@ -1,0 +1,133 @@
+{
+  "step": "specification",
+  "scenario": "new-project",
+  "questions": [
+    {
+      "id": "feature_name",
+      "type": "text",
+      "question": "What is the name of this feature?",
+      "hint": "Use a descriptive name like 'Patient Visit Tracker' or 'Email Notification System'",
+      "required": true,
+      "variable": "FEATURE_NAME"
+    },
+    {
+      "id": "problem_statement",
+      "type": "text",
+      "question": "What problem does this feature solve?",
+      "hint": "Describe the current pain point or gap this addresses",
+      "required": true,
+      "variable": "PROBLEM_STATEMENT"
+    },
+    {
+      "id": "proposed_solution",
+      "type": "text",
+      "question": "What is the high-level solution? (WHAT, not HOW)",
+      "hint": "Focus on what the feature does, not how it's implemented technically",
+      "required": true,
+      "variable": "PROPOSED_SOLUTION"
+    },
+    {
+      "id": "primary_users",
+      "type": "text",
+      "question": "Who are the primary users/personas for this feature?",
+      "hint": "e.g., 'Office Manager', 'Physician', 'Medical Billing Staff', etc.",
+      "required": true,
+      "variable": "PRIMARY_USERS"
+    },
+    {
+      "id": "success_criteria",
+      "type": "text",
+      "question": "How will you measure success for this feature?",
+      "hint": "Provide measurable outcomes (e.g., 'Reduce data entry time by 50%', 'Process 100 records per minute')",
+      "required": true,
+      "variable": "SUCCESS_CRITERIA"
+    },
+    {
+      "id": "user_stories_count",
+      "type": "number",
+      "question": "How many main user stories do you anticipate?",
+      "hint": "I'll help you define each one. Typically 3-7 for a feature.",
+      "default": 3,
+      "min": 1,
+      "max": 20,
+      "required": true,
+      "variable": "USER_STORIES_COUNT"
+    },
+    {
+      "id": "ui_requirements",
+      "type": "text",
+      "question": "Describe the user interface requirements (if applicable)",
+      "hint": "Dashboard? Forms? Automated background process? No UI?",
+      "required": false,
+      "variable": "UI_REQUIREMENTS"
+    },
+    {
+      "id": "data_requirements",
+      "type": "text",
+      "question": "What data will this feature work with?",
+      "hint": "Types of data, where it comes from, where it's stored",
+      "required": true,
+      "variable": "DATA_REQUIREMENTS"
+    },
+    {
+      "id": "performance_requirements",
+      "type": "text",
+      "question": "Are there specific performance requirements?",
+      "hint": "Response time, throughput, data volume, etc. Or 'No specific requirements'",
+      "required": false,
+      "variable": "PERFORMANCE_REQUIREMENTS"
+    },
+    {
+      "id": "security_requirements",
+      "type": "text",
+      "question": "What are the security requirements beyond standard practices?",
+      "hint": "Access control, encryption, audit logging, etc. Or 'Standard security sufficient'",
+      "required": false,
+      "variable": "SECURITY_REQUIREMENTS"
+    },
+    {
+      "id": "constraints",
+      "type": "text",
+      "question": "What are the key constraints for this feature?",
+      "hint": "Budget, timeline, technology limitations, regulatory requirements, etc.",
+      "required": false,
+      "variable": "CONSTRAINTS"
+    },
+    {
+      "id": "out_of_scope",
+      "type": "text",
+      "question": "What is explicitly OUT OF SCOPE for this feature?",
+      "hint": "Helps prevent scope creep. What will NOT be included?",
+      "required": false,
+      "variable": "OUT_OF_SCOPE"
+    }
+  ],
+  "follow_up_questions": {
+    "user_stories": {
+      "question_template": "Describe user story {{number}}:",
+      "fields": [
+        {
+          "id": "persona",
+          "question": "As a... (who is the user?)",
+          "required": true
+        },
+        {
+          "id": "want",
+          "question": "I want... (what do they want to do?)",
+          "required": true
+        },
+        {
+          "id": "benefit",
+          "question": "So that... (why? what's the benefit?)",
+          "required": true
+        },
+        {
+          "id": "acceptance_criteria",
+          "question": "What are the acceptance criteria? (separate with semicolons)",
+          "hint": "e.g., 'User can upload file; File is validated; Success message shown'",
+          "required": true
+        }
+      ]
+    }
+  }
+}

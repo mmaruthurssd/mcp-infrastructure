@@ -1,0 +1,29 @@
+{
+  "name": "mcp-config-manager",
+  "version": "2.0.0",
+  "description": "Comprehensive MCP server for managing and validating MCP server configurations against MCP_CONFIGURATION_GUIDE.md",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "tsc --watch & node --watch dist/server.js",
+    "start": "node dist/server.js"
+  },
+  "keywords": [
+    "mcp",
+    "configuration",
+    "management",
+    "validation",
+    "scope"
+  ],
+  "author": "Medical Practice Workspace",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

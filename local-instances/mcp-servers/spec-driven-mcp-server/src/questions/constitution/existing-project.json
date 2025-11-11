@@ -1,0 +1,123 @@
+{
+  "step": "constitution",
+  "scenario": "existing-project",
+  "questions": [
+    {
+      "id": "project_name",
+      "type": "text",
+      "question": "What is the name of this existing project?",
+      "required": true,
+      "variable": "PROJECT_NAME"
+    },
+    {
+      "id": "project_type",
+      "type": "single_select",
+      "question": "What type of project is this?",
+      "options": [
+        {"value": "google-sheets", "label": "Google Sheets Tool/Dashboard"},
+        {"value": "mcp-server", "label": "MCP Server"},
+        {"value": "web-app", "label": "Web Application"},
+        {"value": "api", "label": "API/Backend Service"},
+        {"value": "tool", "label": "Command-line Tool"},
+        {"value": "other", "label": "Other"}
+      ],
+      "required": true,
+      "variable": "PROJECT_TYPE"
+    },
+    {
+      "id": "existing_tech_stack",
+      "type": "text",
+      "question": "What technology stack is currently in use?",
+      "hint": "e.g., 'Google Apps Script', 'Node.js + Express', 'Python + Flask'",
+      "required": true,
+      "variable": "TECH_STACK"
+    },
+    {
+      "id": "phi_handling",
+      "type": "boolean",
+      "question": "Does this project currently handle PHI (Protected Health Information)?",
+      "default": false,
+      "required": true,
+      "variable": "PHI_HANDLING"
+    },
+    {
+      "id": "hipaa_compliance",
+      "type": "boolean",
+      "question": "Does this project require HIPAA compliance?",
+      "condition": {
+        "field": "phi_handling",
+        "equals": true
+      },
+      "default": true,
+      "required": true,
+      "variable": "HIPAA_COMPLIANCE"
+    },
+    {
+      "id": "existing_tests",
+      "type": "boolean",
+      "question": "Does the project currently have tests?",
+      "default": false,
+      "required": true,
+      "variable": "HAS_EXISTING_TESTS"
+    },
+    {
+      "id": "testing_requirements",
+      "type": "multi_select",
+      "question": "What testing levels do you want to enforce going forward?",
+      "options": [
+        {"value": "unit", "label": "Unit Tests", "default": true},
+        {"value": "integration", "label": "Integration Tests", "default": true},
+        {"value": "e2e", "label": "End-to-End Tests", "default": false},
+        {"value": "manual", "label": "Manual Testing Checklists", "default": false}
+      ],
+      "required": true,
+      "variable": "TESTING_REQUIREMENTS"
+    },
+    {
+      "id": "test_first_mandatory",
+      "type": "boolean",
+      "question": "Should Test-First Development (TDD) be mandatory for new code?",
+      "hint": "Existing code exempt, but all new features must have tests written first",
+      "default": true,
+      "required": true,
+      "variable": "TEST_FIRST_MANDATORY"
+    },
+    {
+      "id": "code_quality_standards",
+      "type": "multi_select",
+      "question": "What code quality standards should be enforced?",
+      "options": [
+        {"value": "linting", "label": "Linting", "default": true},
+        {"value": "formatting", "label": "Code Formatting", "default": true},
+        {"value": "type_checking", "label": "Type Checking", "default": false},
+        {"value": "code_review", "label": "Mandatory Code Review", "default": true},
+        {"value": "documentation", "label": "Documentation Standards", "default": true}
+      ],
+      "required": true,
+      "variable": "CODE_QUALITY_STANDARDS"
+    },
+    {
+      "id": "architectural_constraints",
+      "type": "text",
+      "question": "What are the key architectural constraints from the existing codebase?",
+      "hint": "e.g., 'Must work with existing database schema', 'Limited to Apps Script quotas'",
+      "required": false,
+      "variable": "ARCHITECTURAL_CONSTRAINTS"
+    },
+    {
+      "id": "deployment_environment",
+      "type": "single_select",
+      "question": "Where is this project currently deployed?",
+      "options": [
+        {"value": "google-apps-script", "label": "Google Apps Script"},
+        {"value": "cloud-function", "label": "Cloud Functions"},
+        {"value": "server", "label": "Traditional Server/VM"},
+        {"value": "container", "label": "Docker/Kubernetes"},
+        {"value": "local", "label": "Local Machine Only"},
+        {"value": "other", "label": "Other"}
+      ],
+      "required": true,
+      "variable": "DEPLOYMENT_ENVIRONMENT"
+    }
+  ]
+}
