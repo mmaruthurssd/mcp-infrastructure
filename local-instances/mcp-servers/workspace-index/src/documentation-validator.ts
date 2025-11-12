@@ -30,7 +30,12 @@ export interface ValidationOptions {
 }
 
 export class DocumentationValidator {
-  constructor(private projectRoot: string) {}
+  private mcpRoot: string;
+
+  constructor(private projectRoot: string) {
+    // Support three-workspace architecture: MCPs may be in a different workspace
+    this.mcpRoot = process.env.WORKSPACE_INDEX_MCP_ROOT || projectRoot;
+  }
 
   async validate(options: ValidationOptions = {}): Promise<ValidationResult> {
     const checks = options.checks || ['all'];
@@ -99,7 +104,8 @@ export class DocumentationValidator {
 
     try {
       // Scan actual MCP directories (including symlinks to directories)
-      const mcpPath = path.join(this.projectRoot, 'local-instances', 'mcp-servers');
+      // Use mcpRoot to support three-workspace architecture where MCPs are centralized
+      const mcpPath = path.join(this.mcpRoot, 'local-instances', 'mcp-servers');
       const entries = await fs.readdir(mcpPath, { withFileTypes: true });
 
       // Filter for directories and symlinks that point to directories

@@ -25,6 +25,7 @@ export interface ValidationOptions {
 }
 export declare class DocumentationValidator {
     private projectRoot;
+    private mcpRoot;
     constructor(projectRoot: string);
     validate(options?: ValidationOptions): Promise<ValidationResult>;
     /**
