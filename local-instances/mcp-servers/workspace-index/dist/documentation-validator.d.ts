@@ -25,7 +25,6 @@ export interface ValidationOptions {
 }
 export declare class DocumentationValidator {
     private projectRoot;
-    private mcpRoot;
     constructor(projectRoot: string);
     validate(options?: ValidationOptions): Promise<ValidationResult>;
     /**
@@ -48,9 +47,4 @@ export declare class DocumentationValidator {
      * Checks file paths, MCP names, links are accurate
      */
     private validateCrossReferences;
-    /**
-     * Validation Rule 5: Architecture Documentation
-     * Validates STANDARDS_ENFORCEMENT_SYSTEM.md and MCP_ECOSYSTEM.md against filesystem reality
-     */
-    private validateArchitectureDocs;
 }

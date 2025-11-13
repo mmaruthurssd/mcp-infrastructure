@@ -56,28 +56,4 @@ export declare class IndexGenerator {
      * Save metadata to file
      */
     private saveMetadata;
-    /**
-     * Generate workspace-wide compliance audit
-     * Scans all MCPs and checks compliance scores
-     */
-    generateComplianceAudit(): Promise<{
-        totalMCPs: number;
-        avgScore: number;
-        highCompliance: number;
-        mediumCompliance: number;
-        lowCompliance: number;
-        mcpScores: Array<{
-            name: string;
-            score: number;
-            compliant: boolean;
-            criticalViolations: number;
-            warnings: number;
-        }>;
-        lowComplianceMCPs: Array<{
-            name: string;
-            score: number;
-            criticalViolations: number;
-            suggestions: string[];
-        }>;
-    }>;
 }

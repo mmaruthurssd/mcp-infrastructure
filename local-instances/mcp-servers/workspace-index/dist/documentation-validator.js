@@ -2,11 +2,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 export class DocumentationValidator {
     projectRoot;
-    mcpRoot;
     constructor(projectRoot) {
         this.projectRoot = projectRoot;
-        // Support three-workspace architecture: MCPs may be in a different workspace
-        this.mcpRoot = process.env.WORKSPACE_INDEX_MCP_ROOT || projectRoot;
     }
     async validate(options = {}) {
         const checks = options.checks || ['all'];
@@ -43,14 +40,6 @@ export class DocumentationValidator {
             if (refIssues.length === 0)
                 passed++;
         }
-        // NEW: Architecture documentation validation
-        if (checks.includes('all')) {
-            const archIssues = await this.validateArchitectureDocs();
-            issues.push(...archIssues);
-            totalChecks++;
-            if (archIssues.length === 0)
-                passed++;
-        }
         return {
             valid: issues.length === 0,
             summary: {
@@ -70,8 +59,7 @@ export class DocumentationValidator {
         const issues = [];
         try {
             // Scan actual MCP directories (including symlinks to directories)
-            // Use mcpRoot to support three-workspace architecture where MCPs are centralized
-            const mcpPath = path.join(this.mcpRoot, 'local-instances', 'mcp-servers');
+            const mcpPath = path.join(this.projectRoot, 'local-instances', 'mcp-servers');
             const entries = await fs.readdir(mcpPath, { withFileTypes: true });
             // Filter for directories and symlinks that point to directories
             const mcpDirs = [];
@@ -365,121 +353,6 @@ export class DocumentationValidator {
                 expected: 'Successful cross-reference validation',
                 actual: `Error: ${error}`,
                 suggestion: 'Check that documentation files exist and are readable',
-            });
-        }
-        return issues;
-    }
-    /**
-     * Validation Rule 5: Architecture Documentation
-     * Validates STANDARDS_ENFORCEMENT_SYSTEM.md and MCP_ECOSYSTEM.md against filesystem reality
-     */
-    async validateArchitectureDocs() {
-        const issues = [];
-        try {
-            // Count actual MCPs
-            const mcpPath = path.join(this.projectRoot, 'local-instances', 'mcp-servers');
-            const entries = await fs.readdir(mcpPath, { withFileTypes: true });
-            const actualMCPCount = entries.filter(e => e.isDirectory()).length;
-            // Check integration count in development/mcp-servers/standards-enforcement-mcp-project/01-planning/
-            const integrationFiles = [
-                'INTEGRATION_COMPLETE_DEPLOYMENT_RELEASE.md',
-                'INTEGRATION_COMPLETE_MCP_CONFIG_MANAGER.md',
-                'INTEGRATION_COMPLETE_GIT_ASSISTANT.md',
-                'INTEGRATION_COMPLETE_TASK_EXECUTOR.md',
-                'INTEGRATION_COMPLETE_WORKSPACE_INDEX.md', // Future
-                'INTEGRATION_COMPLETE_SPEC_DRIVEN.md', // Future
-            ];
-            const planningPath = path.join(this.projectRoot, 'development', 'mcp-servers', 'standards-enforcement-mcp-project', '01-planning');
-            let completedIntegrations = 0;
-            for (const file of integrationFiles) {
-                const filePath = path.join(planningPath, file);
-                try {
-                    await fs.access(filePath);
-                    completedIntegrations++;
-                }
-                catch {
-                    // File doesn't exist yet
-                }
-            }
-            // Validate STANDARDS_ENFORCEMENT_SYSTEM.md
-            const standardsDocPath = path.join(this.projectRoot, 'STANDARDS_ENFORCEMENT_SYSTEM.md');
-            try {
-                const standardsContent = await fs.readFile(standardsDocPath, 'utf-8');
-                const lines = standardsContent.split('\n');
-                // Check for integration count mentions (e.g., "4 of 6")
-                const integrationPattern = /(\d+)\s+of\s+6\s+(?:integrations?\s+)?complete/i;
-                lines.forEach((line, index) => {
-                    const match = line.match(integrationPattern);
-                    if (match) {
-                        const documentedCount = parseInt(match[1]);
-                        if (documentedCount !== completedIntegrations) {
-                            issues.push({
-                                severity: 'warning',
-                                category: 'architecture_docs',
-                                file: 'STANDARDS_ENFORCEMENT_SYSTEM.md',
-                                line: index + 1,
-                                expected: `${completedIntegrations} of 6 integrations complete`,
-                                actual: `${documentedCount} of 6 integrations complete`,
-                                suggestion: `Update integration count to ${completedIntegrations} at line ${index + 1}`,
-                            });
-                        }
-                    }
-                });
-            }
-            catch (error) {
-                issues.push({
-                    severity: 'warning',
-                    category: 'architecture_docs',
-                    file: 'STANDARDS_ENFORCEMENT_SYSTEM.md',
-                    expected: 'File exists and is readable',
-                    actual: `File not found or not readable`,
-                    suggestion: 'Create STANDARDS_ENFORCEMENT_SYSTEM.md in workspace root',
-                });
-            }
-            // Validate MCP_ECOSYSTEM.md
-            const ecosystemDocPath = path.join(this.projectRoot, 'MCP_ECOSYSTEM.md');
-            try {
-                const ecosystemContent = await fs.readFile(ecosystemDocPath, 'utf-8');
-                const lines = ecosystemContent.split('\n');
-                // Check for total MCP count mentions
-                const mcpCountPattern = /(?:Total MCP Servers|Total MCPs)[:\s]+(\d+)/i;
-                lines.forEach((line, index) => {
-                    const match = line.match(mcpCountPattern);
-                    if (match) {
-                        const documentedCount = parseInt(match[1]);
-                        if (Math.abs(documentedCount - actualMCPCount) > 2) { // Allow small drift
-                            issues.push({
-                                severity: 'warning',
-                                category: 'architecture_docs',
-                                file: 'MCP_ECOSYSTEM.md',
-                                line: index + 1,
-                                expected: `~${actualMCPCount} MCP servers`,
-                                actual: `${documentedCount} MCP servers`,
-                                suggestion: `Update MCP count to reflect ~${actualMCPCount} servers at line ${index + 1}`,
-                            });
-                        }
-                    }
-                });
-            }
-            catch (error) {
-                issues.push({
-                    severity: 'warning',
-                    category: 'architecture_docs',
-                    file: 'MCP_ECOSYSTEM.md',
-                    expected: 'File exists and is readable',
-                    actual: `File not found or not readable`,
-                    suggestion: 'Create MCP_ECOSYSTEM.md in workspace root',
-                });
-            }
-        }
-        catch (error) {
-            issues.push({
-                severity: 'info',
-                category: 'architecture_docs',
-                file: 'system',
-                expected: 'Successful architecture docs validation',
-                actual: `Error: ${error}`,
-                suggestion: 'Check that architecture documentation exists',
             });
         }
         return issues;

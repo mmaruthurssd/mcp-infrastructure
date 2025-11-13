@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { standardsValidator } from './standards-validator-client.js';
 export class IndexGenerator {
     projectRoot;
     indexMetadata = new Map();
@@ -329,76 +328,5 @@ export class IndexGenerator {
         const metadataPath = path.join(this.projectRoot, this.METADATA_FILE_NAME);
         const metadata = Object.fromEntries(this.indexMetadata);
         await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');
-    }
-    /**
-     * Generate workspace-wide compliance audit
-     * Scans all MCPs and checks compliance scores
-     */
-    async generateComplianceAudit() {
-        const mcpPath = path.join(this.projectRoot, 'local-instances', 'mcp-servers');
-        try {
-            const entries = await fs.readdir(mcpPath, { withFileTypes: true });
-            const mcpDirs = entries.filter(e => e.isDirectory()).map(e => e.name);
-            const mcpScores = [];
-            console.error(`\n🔍 Running compliance audit for ${mcpDirs.length} MCPs...`);
-            // Check compliance for each MCP
-            for (const mcpName of mcpDirs) {
-                try {
-                    const validation = await standardsValidator.validateMcpCompliance({
-                        mcpName,
-                        categories: ['security', 'documentation', 'configuration'],
-                        failFast: false,
-                        includeWarnings: true,
-                    });
-                    mcpScores.push({
-                        name: mcpName,
-                        score: validation.summary.complianceScore,
-                        compliant: validation.compliant,
-                        criticalViolations: validation.summary.criticalViolations,
-                        warnings: validation.summary.warningViolations,
-                    });
-                    console.error(`  ${validation.compliant ? '✅' : '⚠️ '} ${mcpName}: ${validation.summary.complianceScore}/100`);
-                }
-                catch (error) {
-                    // Log error but continue with other MCPs
-                    console.error(`  ❌ ${mcpName}: Validation failed (${error instanceof Error ? error.message : String(error)})`);
-                }
-            }
-            // Calculate statistics
-            const avgScore = mcpScores.length > 0
-                ? Math.round(mcpScores.reduce((sum, m) => sum + m.score, 0) / mcpScores.length)
-                : 0;
-            const highCompliance = mcpScores.filter(m => m.score >= 90).length;
-            const mediumCompliance = mcpScores.filter(m => m.score >= 70 && m.score < 90).length;
-            const lowCompliance = mcpScores.filter(m => m.score < 70).length;
-            // Identify low compliance MCPs needing attention
-            const lowComplianceMCPs = mcpScores
-                .filter(m => m.score < 70)
-                .sort((a, b) => a.score - b.score)
-                .map(m => ({
-                name: m.name,
-                score: m.score,
-                criticalViolations: m.criticalViolations,
-                suggestions: [
-                    m.criticalViolations > 0 ? `Fix ${m.criticalViolations} critical violation(s)` : null,
-                    m.warnings > 0 ? `Address ${m.warnings} warning(s)` : null,
-                    `Run: validate_mcp_compliance({mcpName: "${m.name}"}) for details`,
-                ].filter(Boolean),
-            }));
-            console.error(`\n📊 Audit Complete: Avg Score ${avgScore}/100 (${highCompliance} high, ${mediumCompliance} medium, ${lowCompliance} low)\n`);
-            return {
-                totalMCPs: mcpScores.length,
-                avgScore,
-                highCompliance,
-                mediumCompliance,
-                lowCompliance,
-                mcpScores,
-                lowComplianceMCPs,
-            };
-        }
-        catch (error) {
-            console.error(`Error generating compliance audit: ${error instanceof Error ? error.message : String(error)}`);
-            throw error;
-        }
     }
 }

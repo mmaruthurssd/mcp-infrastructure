@@ -21,6 +21,11 @@ export interface WrapUpProjectResult {
   validationPassed: boolean;
   warnings: string[];
   message: string;
+  // Archival fields
+  archived?: boolean;
+  archivePath?: string;
+  completionSummaryPath?: string;
+  gitCommit?: string;
 }
 
 export class WrapUpProjectTool {
@@ -78,12 +83,30 @@ export class WrapUpProjectTool {
     // Create final state backup
     StateManager.backup(projectPath);
 
+    // Auto-detect and archive implementation projects
+    const archivalResult = this.archiveImplementationProject(projectPath, state, notes);
+
+    const message = archivalResult.archived
+      ? `Project wrapped up and archived to ${archivalResult.archivePath}`
+      : 'Project wrapped up successfully! Completion report generated.';
+
+    if (archivalResult.archived) {
+      warnings.push(`✨ Implementation project automatically archived`);
+      if (archivalResult.gitCommit) {
+        warnings.push(`📦 Git commit created: ${archivalResult.gitCommit}`);
+      }
+    }
+
     return {
       success: true,
       completionReportPath: reportPath,
       validationPassed: !skipValidation,
       warnings,
-      message: 'Project wrapped up successfully! Completion report generated.',
+      message,
+      archived: archivalResult.archived,
+      archivePath: archivalResult.archivePath,
+      completionSummaryPath: archivalResult.completionSummaryPath,
+      gitCommit: archivalResult.gitCommit,
     };
   }
 
@@ -226,6 +249,215 @@ export class WrapUpProjectTool {
     return '0.9.0';
   }
 
+  /**
+   * Archive implementation project if detected
+   */
+  private static archiveImplementationProject(
+    projectPath: string,
+    state: any,
+    notes?: string
+  ): { archived: boolean; archivePath?: string; completionSummaryPath?: string; gitCommit?: string } {
+    // Detect if this is an implementation project
+    const isImplementationProject = projectPath.includes('Implementation Projects');
+
+    if (!isImplementationProject) {
+      return { archived: false };
+    }
+
+    console.error('[WrapUpProject] Implementation project detected - initiating archival...');
+
+    try {
+      // Determine archive destination
+      const now = new Date();
+      const year = now.getFullYear();
+      const projectName = path.basename(projectPath);
+
+      // Find workspace root (go up from Implementation Projects/)
+      const implementationProjectsIndex = projectPath.indexOf('Implementation Projects');
+      const workspaceRoot = projectPath.substring(0, implementationProjectsIndex);
+
+      const archiveRoot = path.join(workspaceRoot, 'archive', 'implementation-projects', String(year));
+      const archivePath = path.join(archiveRoot, projectName);
+
+      // Create archive directory
+      if (!fs.existsSync(archiveRoot)) {
+        fs.mkdirSync(archiveRoot, { recursive: true });
+      }
+
+      // Generate completion summary before moving
+      const completionSummaryPath = this.generateCompletionSummary(
+        projectPath,
+        state,
+        notes,
+        archivePath
+      );
+
+      // Move project to archive
+      if (fs.existsSync(archivePath)) {
+        // If archive destination exists, append timestamp to avoid collision
+        const timestamp = now.toISOString().replace(/[:.]/g, '-').split('T')[0];
+        const uniqueArchivePath = `${archivePath}-${timestamp}`;
+        console.error(`[WrapUpProject] Archive path exists, using ${uniqueArchivePath}`);
+        fs.renameSync(projectPath, uniqueArchivePath);
+      } else {
+        fs.renameSync(projectPath, archivePath);
+      }
+
+      console.error(`[WrapUpProject] Project moved to: ${archivePath}`);
+
+      // Create git commit
+      const gitCommit = this.createGitCommit(workspaceRoot, projectName, year);
+
+      // Log telemetry
+      this.logTelemetry(workspaceRoot, {
+        event_type: 'implementation-project-archived',
+        event_data: {
+          projectName,
+          archivePath,
+          year,
+          goalsCompleted: state.goals.completed.length,
+          duration: this.calculateDuration(state.created, now.toISOString()),
+        },
+      });
+
+      return {
+        archived: true,
+        archivePath,
+        completionSummaryPath,
+        gitCommit,
+      };
+    } catch (error) {
+      console.error('[WrapUpProject] Archival failed:', error);
+      return {
+        archived: false,
+      };
+    }
+  }
+
+  /**
+   * Generate completion summary for archived project
+   */
+  private static generateCompletionSummary(
+    projectPath: string,
+    state: any,
+    notes: string | undefined,
+    archivePath: string
+  ): string {
+    const now = new Date();
+    const summaryPath = path.join(projectPath, 'COMPLETION-SUMMARY.md');
+
+    let content = '';
+    content += '---\n';
+    content += `project: ${state.projectName}\n`;
+    content += `completed: ${now.toISOString().split('T')[0]}\n`;
+    content += `status: ${state.goals.completed.length > 0 ? 'deployed' : 'completed'}\n`;
+    content += 'type: implementation-project\n';
+    content += '---\n\n';
+
+    content += `# ${state.projectName} - Completion Summary\n\n`;
+    content += `**Status**: ✅ COMPLETE\n`;
+    content += `**Completed**: ${now.toISOString().split('T')[0]}\n`;
+    content += `**Duration**: ${this.calculateDuration(state.created, now.toISOString())}\n`;
+    content += `**Archived to**: \`${path.relative(path.dirname(path.dirname(projectPath)), archivePath)}\`\n\n`;
+
+    content += '---\n\n';
+
+    // Goals completed
+    content += '## Goals Completed\n\n';
+    if (state.goals.completed.length > 0) {
+      state.goals.completed.forEach((goal: string) => {
+        content += `- ✅ ${goal}\n`;
+      });
+    } else {
+      content += '*No goals tracked*\n';
+    }
+    content += '\n';
+
+    // Metrics
+    content += '## Metrics\n\n';
+    content += `- **Total Goals**: ${state.goals.completed.length}\n`;
+    content += `- **Workflows Created**: ${state.integrations.taskExecutor.totalWorkflowsCreated || 0}\n`;
+    content += `- **Specifications**: ${state.integrations.specDriven.goalsWithSpecs.length}\n`;
+    content += `- **Duration**: ${this.calculateDuration(state.created, now.toISOString())}\n`;
+    content += '\n';
+
+    // Deployment info
+    if (state.integrations.specDriven.goalsWithSpecs.length > 0) {
+      content += '## Deployment\n\n';
+      content += '*See PROJECT-COMPLETION-REPORT.md for detailed deployment information*\n\n';
+    }
+
+    // Notes
+    if (notes) {
+      content += '## Completion Notes\n\n';
+      content += notes + '\n\n';
+    }
+
+    content += '---\n\n';
+    content += `*Archived: ${now.toISOString().split('T')[0]}*\n`;
+    content += '*Generated by Project Management MCP Server*\n';
+
+    fs.writeFileSync(summaryPath, content, 'utf8');
+    console.error(`[WrapUpProject] Completion summary created: ${summaryPath}`);
+
+    return summaryPath;
+  }
+
+  /**
+   * Create git commit for archival
+   */
+  private static createGitCommit(workspaceRoot: string, projectName: string, year: number): string | undefined {
+    try {
+      const { execSync } = require('child_process');
+
+      // Check if we're in a git repository
+      try {
+        execSync('git rev-parse --git-dir', { cwd: workspaceRoot, stdio: 'ignore' });
+      } catch {
+        console.error('[WrapUpProject] Not a git repository - skipping commit');
+        return undefined;
+      }
+
+      // Create commit
+      const message = `archive: ${projectName} - completed ${new Date().toISOString().split('T')[0]}`;
+      execSync('git add .', { cwd: workspaceRoot, stdio: 'ignore' });
+      execSync(`git commit -m "${message}"`, { cwd: workspaceRoot, stdio: 'ignore' });
+
+      // Get commit hash
+      const commitHash = execSync('git rev-parse --short HEAD', { cwd: workspaceRoot, encoding: 'utf8' }).trim();
+
+      console.error(`[WrapUpProject] Git commit created: ${commitHash}`);
+      return commitHash;
+    } catch (error) {
+      console.error('[WrapUpProject] Git commit failed:', error);
+      return undefined;
+    }
+  }
+
+  /**
+   * Log telemetry to workspace-brain
+   */
+  private static logTelemetry(workspaceRoot: string, event: any): void {
+    try {
+      const telemetryDir = path.join(workspaceRoot, '.telemetry');
+      if (!fs.existsSync(telemetryDir)) {
+        fs.mkdirSync(telemetryDir, { recursive: true });
+      }
+
+      const logFile = path.join(telemetryDir, 'project-management-events.jsonl');
+      const entry = {
+        timestamp: new Date().toISOString(),
+        source: 'project-management-mcp',
+        ...event,
+      };
+
+      fs.appendFileSync(logFile, JSON.stringify(entry) + '\n');
+      console.error(`[WrapUpProject] Telemetry logged`);
+    } catch (error) {
+      console.error('[WrapUpProject] Telemetry logging failed:', error);
+    }
+  }
+
   static formatResult(result: WrapUpProjectResult): string {
     let output = '='.repeat(70) + '\n';
     output += '  PROJECT WRAP-UP\n';
@@ -250,6 +482,16 @@ export class WrapUpProjectTool {
       output += `📊 Completion Report: ${result.completionReportPath}\n`;
     }
 
+    if (result.archived) {
+      output += `📦 Archived to: ${result.archivePath}\n`;
+      if (result.completionSummaryPath) {
+        output += `📝 Completion Summary: ${result.completionSummaryPath}\n`;
+      }
+      if (result.gitCommit) {
+        output += `🔖 Git Commit: ${result.gitCommit}\n`;
+      }
+    }
+
     output += `✓ Validation: ${result.validationPassed ? 'Passed' : 'Skipped'}\n`;
     output += '\n';
 
@@ -265,9 +507,14 @@ export class WrapUpProjectTool {
     output += '─'.repeat(70) + '\n\n';
     output += '🎯 NEXT STEPS\n\n';
     output += '   1. Review completion report\n';
-    output += '   2. Archive project repository\n';
-    output += '   3. Communicate completion to stakeholders\n';
-    output += '   4. Transfer knowledge if needed\n';
+    if (!result.archived) {
+      output += '   2. Archive project repository\n';
+      output += '   3. Communicate completion to stakeholders\n';
+      output += '   4. Transfer knowledge if needed\n';
+    } else {
+      output += '   2. Communicate completion to stakeholders\n';
+      output += '   3. Transfer knowledge if needed\n';
+    }
     output += '\n';
 
     output += '💡 TIP: Validate workspace documentation to ensure it reflects the project completion:\n';
