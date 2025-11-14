@@ -1,1 +1,0 @@
-{"version":3,"file":"move-component.d.ts","sourceRoot":"","sources":["../../src/tools/move-component.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAQH,OAAO,EACL,mBAAmB,EACnB,mBAAmB,EAEpB,MAAM,2BAA2B,CAAC;AAEnC,qBAAa,iBAAiB;IAC5B,MAAM,CAAC,iBAAiB;;;;;;;;;;;;;;;;;;;;;;;;;;;IA8BxB,MAAM,CAAC,OAAO,CAAC,MAAM,EAAE,mBAAmB,GAAG,mBAAmB;CAuDjE"}

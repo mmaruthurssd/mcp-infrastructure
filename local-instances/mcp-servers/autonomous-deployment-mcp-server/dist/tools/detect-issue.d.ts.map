@@ -1,1 +1,0 @@
-{"version":3,"file":"detect-issue.d.ts","sourceRoot":"","sources":["../../src/tools/detect-issue.ts"],"names":[],"mappings":"AAAA;;;;;GAKG;AAmEH,UAAU,eAAe;IACvB,MAAM,CAAC,EAAE,WAAW,GAAG,UAAU,GAAG,qBAAqB,CAAC;IAC1D,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,aAAa,CAAC,EAAE,MAAM,CAAC;CACxB;AAED;;;GAGG;AACH,wBAAsB,WAAW,CAAC,IAAI,EAAE,eAAe;;;;;;;;;;;;GAqKtD"}

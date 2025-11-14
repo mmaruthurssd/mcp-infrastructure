@@ -1,1 +1,0 @@
-{"version":3,"file":"generate-coverage-report.d.ts","sourceRoot":"","sources":["../../src/tools/generate-coverage-report.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAGH,OAAO,KAAK,EAAE,2BAA2B,EAAE,4BAA4B,EAAE,MAAM,aAAa,CAAC;AAE7F,qBAAa,0BAA0B;IACrC;;OAEG;IACH,MAAM,CAAC,iBAAiB;;;;;;;;;;;;;;;;;;;;;;;IA0BxB;;OAEG;WACU,OAAO,CAAC,KAAK,EAAE,2BAA2B,GAAG,OAAO,CAAC,4BAA4B,CAAC;CA0BhG"}
