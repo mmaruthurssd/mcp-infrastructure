@@ -1,0 +1,262 @@
+{
+  "$schema": "../config-schema.json",
+  "version": "1.0.0",
+  "description": "Component detection rules for Phase 5 system component discovery and documentation validation",
+
+  "minimumAge": 7,
+  "minConfidence": 0.7,
+
+  "excludePatterns": [
+    "temp/",
+    "archive/",
+    "node_modules/",
+    "dist/",
+    "build/",
+    ".git/",
+    "coverage/",
+    "*.log",
+    "*.tmp"
+  ],
+
+  "componentTypes": {
+    "automation": {
+      "description": "Automated workflows, cron jobs, and scheduled tasks",
+      "patterns": [
+        ".github/workflows/*.yml",
+        ".github/workflows/*.yaml",
+        "automation/*/server.sh",
+        "automation/*-server.sh",
+        "scripts/*-automation.sh",
+        "cron.d/*"
+      ],
+      "indicators": [
+        "cron schedule",
+        "workflow_dispatch",
+        "on: schedule",
+        "#!/bin/bash",
+        "while true",
+        "daemon",
+        "systemd"
+      ],
+      "criticality": "normal"
+    },
+
+    "infrastructure": {
+      "description": "Core infrastructure components including authentication, credentials, and service accounts",
+      "patterns": [
+        "google-workspace-oauth-setup/service-account.json",
+        "google-workspace-oauth-setup/*.json",
+        "*/backup*.sh",
+        "*/restore*.sh",
+        "*-credentials.json",
+        "infrastructure/*",
+        "deployment/*"
+      ],
+      "indicators": [
+        "service account",
+        "credentials",
+        "authentication",
+        "oauth",
+        "api key",
+        "infrastructure",
+        "deployment"
+      ],
+      "criticality": "critical"
+    },
+
+    "integration": {
+      "description": "Production integrations and implementation projects",
+      "patterns": [
+        "Implementation Projects/*/PROJECT-OVERVIEW.md",
+        "Implementation Projects/*/README.md",
+        "integrations/*",
+        "live-*/PROJECT-OVERVIEW.md"
+      ],
+      "indicators": [
+        "Status: ✅ Production",
+        "Status: 🟢 Production",
+        "Status: Active",
+        "deployed",
+        "in production",
+        "live system"
+      ],
+      "criticality": "important"
+    },
+
+    "protection": {
+      "description": "Security, backup, and data protection systems",
+      "patterns": [
+        ".github/workflows/backup-*.yml",
+        "scripts/*-hook.sh",
+        "scripts/pre-commit*",
+        "scripts/pre-push*",
+        "backup-system/*",
+        "security/*",
+        ".github/workflows/*-security*.yml"
+      ],
+      "indicators": [
+        "pre-commit",
+        "pre-push",
+        "backup",
+        "security",
+        "encryption",
+        "phi",
+        "hipaa",
+        "compliance"
+      ],
+      "criticality": "critical"
+    },
+
+    "monitoring": {
+      "description": "System monitoring, health checks, and alerting",
+      "patterns": [
+        "scripts/*health-check*.sh",
+        "scripts/*monitor*.sh",
+        ".github/workflows/*-health*.yml",
+        "monitoring/*",
+        "observability/*"
+      ],
+      "indicators": [
+        "monitoring",
+        "health check",
+        "alerting",
+        "metrics",
+        "observability",
+        "uptime",
+        "status check"
+      ],
+      "criticality": "important"
+    }
+  },
+
+  "customPatterns": [
+    {
+      "name": "Custom Automation Script",
+      "type": "automation",
+      "patterns": [
+        "custom-scripts/*-automation.sh",
+        "tools/*-daemon.sh"
+      ],
+      "indicators": [
+        "#!/bin/bash",
+        "cron"
+      ]
+    },
+    {
+      "name": "MCP Server Instance",
+      "type": "infrastructure",
+      "patterns": [
+        "local-instances/mcp-servers/*/",
+        "development/mcp-servers/*/"
+      ],
+      "indicators": [
+        "package.json",
+        "server.ts",
+        "mcp",
+        "tools"
+      ]
+    },
+    {
+      "name": "Google Workspace Integration",
+      "type": "integration",
+      "patterns": [
+        "*google-workspace*",
+        "*sheets-integration*",
+        "*drive-sync*"
+      ],
+      "indicators": [
+        "google",
+        "oauth",
+        "service account",
+        "sheets",
+        "drive"
+      ]
+    }
+  ],
+
+  "criticalityRules": {
+    "backup": "critical",
+    "security": "critical",
+    "authentication": "critical",
+    "credentials": "critical",
+    "phi": "critical",
+    "hipaa": "critical",
+    "monitoring": "important",
+    "automation": "normal",
+    "integration": "important",
+    "health-check": "important"
+  },
+
+  "documentationRequirements": {
+    "critical": {
+      "SYSTEM-COMPONENTS.md": {
+        "required": true,
+        "minAge": 7,
+        "validationMethod": "section-exists"
+      },
+      "WORKSPACE_ARCHITECTURE.md": {
+        "required": true,
+        "minAge": 7,
+        "validationMethod": "section-exists"
+      },
+      "START_HERE.md": {
+        "required": true,
+        "minAge": 7,
+        "validationMethod": "keyword-match"
+      }
+    },
+    "important": {
+      "SYSTEM-COMPONENTS.md": {
+        "required": true,
+        "minAge": 7,
+        "validationMethod": "section-exists"
+      },
+      "WORKSPACE_ARCHITECTURE.md": {
+        "required": false,
+        "minAge": 14,
+        "validationMethod": "section-exists"
+      }
+    },
+    "normal": {
+      "SYSTEM-COMPONENTS.md": {
+        "required": true,
+        "minAge": 14,
+        "validationMethod": "section-exists"
+      }
+    }
+  },
+
+  "confidenceScoring": {
+    "weights": {
+      "patternMatch": 0.35,
+      "indicatorCount": 0.25,
+      "fileAge": 0.20,
+      "locationMatch": 0.20
+    },
+    "thresholds": {
+      "highConfidence": 0.85,
+      "mediumConfidence": 0.70,
+      "lowConfidence": 0.50
+    }
+  },
+
+  "_comments": {
+    "minimumAge": "Minimum age in days for a component to be considered 'permanent' (default: 7)",
+    "minConfidence": "Minimum confidence score (0-1) to report a detected component",
+    "excludePatterns": "Directories and files to exclude from component detection",
+    "componentTypes": "Detection patterns and indicators for each component type",
+    "customPatterns": "User-defined custom detection patterns for workspace-specific components",
+    "criticalityRules": "Keyword-based rules for determining component criticality",
+    "documentationRequirements": "Documentation requirements by criticality level",
+    "confidenceScoring": "Weights and thresholds for confidence calculation"
+  },
+
+  "_metadata": {
+    "config_version": "1.0.0",
+    "phase": "5",
+    "feature": "component-detection",
+    "created_at": "2025-11-14",
+    "last_updated": "2025-11-14",
+    "author": "workspace-index-mcp-team"
+  }
+}

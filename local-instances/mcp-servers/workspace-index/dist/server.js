@@ -11,6 +11,9 @@ import { DocumentationHealthAnalyzer } from './phase4/documentation-health-analy
 import { ConsolidationExecutor } from './phase4/consolidation-executor.js';
 import { ReferenceValidator } from './phase4/reference-validator.js';
 import { HealthReportGenerator } from './phase4/health-report-generator.js';
+import { ComponentDetector } from './phase5/component-detector.js';
+import { ComponentValidator } from './phase5/component-validator.js';
+import { DocumentationSuggester } from './phase5/documentation-suggester.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 const PROJECT_ROOT = process.env.WORKSPACE_INDEX_PROJECT_ROOT ||
@@ -44,6 +47,9 @@ let healthAnalyzer;
 let consolidationExecutor;
 let referenceValidator;
 let healthReportGenerator;
+let componentDetector;
+let componentValidator;
+let documentationSuggester;
 // Initialize MCP server
 const server = new Server({
     name: 'workspace-index',
@@ -374,6 +380,72 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         },
                     },
                     required: ['oldPath', 'newPath'],
+                },
+            },
+            {
+                name: 'detect_system_components',
+                description: 'Phase 5: Scan workspace for system components and identify which are undocumented',
+                inputSchema: {
+                    type: 'object',
+                    properties: {
+                        workspacePath: {
+                            type: 'string',
+                            description: 'Optional workspace path (defaults to project root)',
+                        },
+                        includeRecent: {
+                            type: 'boolean',
+                            description: 'Include components newer than minimum age (default: false)',
+                        },
+                        minConfidence: {
+                            type: 'number',
+                            description: 'Minimum confidence threshold 0-1 (default: 0.7)',
+                        },
+                    },
+                },
+            },
+            {
+                name: 'validate_component_documentation',
+                description: 'Phase 5: Verify that a specific component is documented in all required locations',
+                inputSchema: {
+                    type: 'object',
+                    properties: {
+                        componentName: {
+                            type: 'string',
+                            description: 'Name of the component to validate',
+                        },
+                        location: {
+                            type: 'string',
+                            description: 'Component location path',
+                        },
+                        type: {
+                            type: 'string',
+                            enum: ['infrastructure', 'automation', 'integration', 'protection', 'monitoring'],
+                            description: 'Component type',
+                        },
+                        isCritical: {
+                            type: 'boolean',
+                            description: 'Whether component is critical (default: false)',
+                        },
+                    },
+                    required: ['componentName', 'location', 'type'],
+                },
+            },
+            {
+                name: 'suggest_component_documentation',
+                description: 'Phase 5: Auto-generate documentation entries for undocumented components',
+                inputSchema: {
+                    type: 'object',
+                    properties: {
+                        componentPath: {
+                            type: 'string',
+                            description: 'Path to component (relative to project root)',
+                        },
+                        analyzeContent: {
+                            type: 'boolean',
+                            description: 'Analyze component content for metadata (default: true)',
+                        },
+                    },
+                    required: ['componentPath'],
                 },
             },
         ],
@@ -1084,6 +1156,171 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 }
             };
         }
+        if (name === 'detect_system_components') {
+            // Phase 5: System Component Detection
+            const includeRecent = args?.includeRecent || false;
+            const minConfidence = args?.minConfidence || 0.7;
+            const result = await componentDetector.detectComponents(includeRecent, minConfidence);
+            let reportText = `🔍 System Component Detection\n\n`;
+            reportText += `📊 Summary:\n`;
+            reportText += `- Total Components: ${result.summary.total}\n`;
+            reportText += `- Documented: ${result.summary.documented}\n`;
+            reportText += `- Undocumented: ${result.summary.undocumented}\n\n`;
+            reportText += `**By Type:**\n`;
+            for (const [type, count] of Object.entries(result.summary.byType)) {
+                if (count > 0) {
+                    reportText += `- ${type}: ${count}\n`;
+                }
+            }
+            reportText += '\n';
+            if (result.components.length === 0) {
+                reportText += `✅ No components detected matching criteria.\n`;
+            }
+            else {
+                const undocumented = result.components.filter(c => !c.isDocumented);
+                if (undocumented.length > 0) {
+                    reportText += `⚠️ Undocumented Components (${undocumented.length}):\n\n`;
+                    for (const component of undocumented.slice(0, 10)) {
+                        reportText += `**${component.name}** (${component.type})\n`;
+                        reportText += `- Location: \`${component.location}\`\n`;
+                        reportText += `- Age: ${component.ageInDays} days\n`;
+                        reportText += `- Confidence: ${(component.confidence * 100).toFixed(1)}%\n`;
+                        reportText += `- Indicators: ${component.indicators.join(', ')}\n\n`;
+                    }
+                    if (undocumented.length > 10) {
+                        reportText += `... and ${undocumented.length - 10} more\n\n`;
+                    }
+                }
+                else {
+                    reportText += `✅ All detected components are documented!\n`;
+                }
+            }
+            await logTelemetry('component-detection', {
+                total_components: result.summary.total,
+                documented: result.summary.documented,
+                undocumented: result.summary.undocumented,
+                by_type: result.summary.byType
+            });
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: reportText,
+                    },
+                ],
+                _meta: {
+                    detectionComplete: true,
+                    summary: result.summary,
+                    components: result.components,
+                    timestamp: new Date().toISOString()
+                }
+            };
+        }
+        if (name === 'validate_component_documentation') {
+            // Phase 5: Component Documentation Validation
+            const componentName = args?.componentName;
+            const location = args?.location;
+            const type = args?.type;
+            const isCritical = args?.isCritical || false;
+            if (!componentName || !location || !type) {
+                throw new McpError(ErrorCode.InvalidParams, 'componentName, location, and type are required');
+            }
+            const result = await componentValidator.validateComponentDocumentation(componentName, location, type, isCritical);
+            let reportText = `📋 Component Documentation Validation\n\n`;
+            reportText += `**Component:** ${result.component}\n`;
+            reportText += `**Status:** ${result.isFullyDocumented ? '✅ Fully Documented' : '⚠️ Incomplete Documentation'}\n\n`;
+            if (result.violations.length > 0) {
+                reportText += `❌ Violations (${result.violations.length}):\n\n`;
+                for (const violation of result.violations) {
+                    const icon = violation.severity === 'error' ? '🔴' : '🟡';
+                    reportText += `${icon} ${violation.file}\n`;
+                    reportText += `   ${violation.message}\n`;
+                    reportText += `   Expected: ${violation.expectedPattern}\n`;
+                    if (violation.autoFixable) {
+                        reportText += `   ✓ Auto-fixable\n`;
+                    }
+                    reportText += '\n';
+                }
+            }
+            if (result.warnings.length > 0) {
+                reportText += `⚠️ Warnings (${result.warnings.length}):\n`;
+                result.warnings.forEach(w => reportText += `- ${w}\n`);
+                reportText += '\n';
+            }
+            if (result.suggestions.length > 0) {
+                reportText += `💡 Suggestions:\n`;
+                result.suggestions.forEach(s => reportText += `- ${s}\n`);
+            }
+            await logTelemetry('component-validation', {
+                component: result.component,
+                fully_documented: result.isFullyDocumented,
+                violations_count: result.violations.length,
+                warnings_count: result.warnings.length
+            });
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: reportText,
+                    },
+                ],
+                _meta: {
+                    validationComplete: true,
+                    result,
+                    timestamp: new Date().toISOString()
+                }
+            };
+        }
+        if (name === 'suggest_component_documentation') {
+            // Phase 5: Documentation Suggestion
+            const componentPath = args?.componentPath;
+            const analyzeContent = args?.analyzeContent !== false; // Default to true
+            if (!componentPath) {
+                throw new McpError(ErrorCode.InvalidParams, 'componentPath is required');
+            }
+            const suggestion = await documentationSuggester.suggestDocumentation(componentPath, analyzeContent);
+            let reportText = `📝 Documentation Suggestion\n\n`;
+            reportText += `**Component:** ${suggestion.component.name}\n`;
+            reportText += `**Type:** ${suggestion.component.type}\n`;
+            reportText += `**Location:** \`${suggestion.component.location}\`\n`;
+            reportText += `**Confidence:** ${(suggestion.confidence * 100).toFixed(1)}%\n\n`;
+            reportText += `**Metadata:**\n`;
+            reportText += `- Purpose: ${suggestion.metadata.estimatedPurpose}\n`;
+            reportText += `- Status: ${suggestion.metadata.suggestedStatus}\n`;
+            if (suggestion.metadata.dependencies.length > 0) {
+                reportText += `- Dependencies: ${suggestion.metadata.dependencies.slice(0, 3).join(', ')}${suggestion.metadata.dependencies.length > 3 ? '...' : ''}\n`;
+            }
+            if (suggestion.metadata.quickStartCommand) {
+                reportText += `- Quick Start: \`${suggestion.metadata.quickStartCommand}\`\n`;
+            }
+            reportText += '\n';
+            reportText += `**Suggested SYSTEM-COMPONENTS.md Entry:**\n\`\`\`markdown\n${suggestion.suggestedEntries.systemComponents}\n\`\`\`\n\n`;
+            if (suggestion.suggestedEntries.workspaceArchitecture) {
+                reportText += `**Suggested WORKSPACE_ARCHITECTURE.md Entry:**\n\`\`\`markdown\n${suggestion.suggestedEntries.workspaceArchitecture}\n\`\`\`\n\n`;
+            }
+            if (suggestion.suggestedEntries.startHere) {
+                reportText += `**Suggested START_HERE.md Entry:**\n\`\`\`markdown\n${suggestion.suggestedEntries.startHere}\n\`\`\`\n`;
+            }
+            await logTelemetry('component-documentation-suggestion', {
+                component: suggestion.component.name,
+                type: suggestion.component.type,
+                confidence: suggestion.confidence,
+                analyzed_content: analyzeContent
+            });
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: reportText,
+                    },
+                ],
+                _meta: {
+                    suggestionGenerated: true,
+                    suggestion,
+                    timestamp: new Date().toISOString()
+                }
+            };
+        }
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
     }
     catch (error) {
@@ -1111,6 +1348,17 @@ async function main() {
     catch (error) {
         console.error('Warning: Could not initialize Phase 4 components:', error);
         console.error('Phase 4 features will not be available');
+    }
+    // Phase 5: Initialize component detection, validation, and suggestion
+    try {
+        componentDetector = new ComponentDetector(PROJECT_ROOT);
+        componentValidator = new ComponentValidator(PROJECT_ROOT);
+        documentationSuggester = new DocumentationSuggester(PROJECT_ROOT);
+        console.error('Phase 5: All components initialized (detector, validator, suggester)');
+    }
+    catch (error) {
+        console.error('Warning: Could not initialize Phase 5 components:', error);
+        console.error('Phase 5 features will not be available');
     }
     const transport = new StdioServerTransport();
     await server.connect(transport);

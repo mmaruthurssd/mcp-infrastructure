@@ -89,6 +89,18 @@ The Project Index Generator MCP Server creates searchable, categorized indexes o
    - Automatic backup before all modifications
    - Markdown syntax validation with automatic rollback
    - Safe, reversible documentation updates
+
+10. **Enhanced Relevance Scoring** (Phase 4)
+   - 4-factor algorithm for improved superseded document detection
+   - **Location Analysis (25%)**: Identifies archive/, temp/, active project placement
+   - **Content Analysis (30%)**: Detects obsolete vs active keywords, completion status
+   - **Reference Checking (25%)**: Validates active vs dead links to current resources
+   - **Age Scoring (20%)**: File modification time and staleness assessment
+   - **Blended Confidence**: Combines original detection (60%) with relevance score (40%)
+   - **Configurable Thresholds**: Auto-archive (≥0.85), manual review (0.60-0.84), keep (<0.60)
+   - **Workspace-Specific Customization**: Active directories and keywords per workspace
+   - **Reduced False Positives**: Prevents archival of active Implementation Project docs
+
 ### What Gets Installed
 
 **Template Storage:**
