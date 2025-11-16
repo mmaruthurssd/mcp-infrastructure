@@ -1,0 +1,1 @@
+workspace-management/shared-docs/MCP_ECOSYSTEM.md
