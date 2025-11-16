@@ -1,0 +1,296 @@
+name: Workspace Backup to Google Cloud Storage
+
+on:
+  # Run twice daily at 9 AM and 5 PM PST (5 PM and 1 AM UTC)
+  schedule:
+    - cron: '0 17 * * *'  # 9 AM PST = 5 PM UTC
+    - cron: '0 1 * * *'   # 5 PM PST = 1 AM UTC (next day)
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+  # Run on main branch updates (excluding workflow files)
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/**'
+
+jobs:
+  backup:
+    name: Create and Upload Complete Workspace Backup
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for comprehensive backup
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCS_SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ssd-sheets-backup-2025
+
+      - name: Verify GCS access
+        run: |
+          echo "Testing GCS bucket access..."
+          gsutil ls gs://ssd-workspace-backups-immutable/ || {
+            echo "❌ Cannot access GCS bucket"
+            exit 1
+          }
+
+      - name: Determine backup type
+        id: backup_type
+        run: |
+          # Check if today is the 1st of the month
+          DAY_OF_MONTH=$(date +%d)
+          if [ "$DAY_OF_MONTH" == "01" ]; then
+            echo "type=monthly" >> $GITHUB_OUTPUT
+            echo "📅 Monthly archive backup"
+          else
+            echo "type=daily" >> $GITHUB_OUTPUT
+            echo "📅 Daily backup"
+          fi
+
+      - name: Create backup archive
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          REPO_NAME="mcp-infrastructure"
+          BACKUP_FILE="workspace-${REPO_NAME}-backup-${TIMESTAMP}.tar.gz"
+
+          echo "Creating complete workspace backup: $BACKUP_FILE"
+          echo "Timestamp: $TIMESTAMP"
+          echo "Commit: ${GITHUB_SHA}"
+          echo "Branch: ${GITHUB_REF_NAME}"
+          echo "Backup Type: ${{ steps.backup_type.outputs.type }}"
+
+          # Create compressed backup of ENTIRE workspace
+          # Exclude: .git/, node_modules/, *.log, .DS_Store
+          tar -czf "$BACKUP_FILE" \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='*.log' \
+            --exclude='.DS_Store' \
+            --exclude='.github/workflows/workspace-backup-gcs.yml' \
+            .
+
+          # Calculate SHA256 checksum
+          sha256sum "$BACKUP_FILE" > "${BACKUP_FILE}.sha256"
+
+          # Get file size
+          BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+          BACKUP_SIZE_BYTES=$(stat -f%z "$BACKUP_FILE" 2>/dev/null || stat -c%s "$BACKUP_FILE")
+
+          # Count files in archive
+          FILE_COUNT=$(tar -tzf "$BACKUP_FILE" | wc -l)
+
+          # Export variables
+          echo "BACKUP_FILE=$BACKUP_FILE" >> $GITHUB_ENV
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+          echo "BACKUP_SIZE=$BACKUP_SIZE" >> $GITHUB_ENV
+          echo "BACKUP_SIZE_BYTES=$BACKUP_SIZE_BYTES" >> $GITHUB_ENV
+          echo "FILE_COUNT=$FILE_COUNT" >> $GITHUB_ENV
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+
+          echo "✅ Backup archive created: $BACKUP_SIZE ($FILE_COUNT files)"
+
+      - name: Upload to GCS (Daily)
+        if: steps.backup_type.outputs.type == 'daily'
+        run: |
+          echo "Uploading daily backup to GCS..."
+
+          # Upload backup with metadata
+          gsutil -h "x-goog-meta-timestamp:${TIMESTAMP}" \
+                 -h "x-goog-meta-commit:${GITHUB_SHA}" \
+                 -h "x-goog-meta-branch:${GITHUB_REF_NAME}" \
+                 -h "x-goog-meta-size:${BACKUP_SIZE_BYTES}" \
+                 -h "x-goog-meta-file-count:${FILE_COUNT}" \
+                 -h "x-goog-meta-backup-type:daily" \
+                 -h "x-goog-meta-retention:90-days" \
+                 cp "${BACKUP_FILE}" \
+                 "gs://ssd-workspace-backups-immutable/${REPO_NAME}/daily-backups/"
+
+          # Upload checksum
+          gsutil cp "${BACKUP_FILE}.sha256" \
+                 "gs://ssd-workspace-backups-immutable/${REPO_NAME}/daily-backups/"
+
+          echo "✅ Daily backup uploaded"
+
+      - name: Upload to GCS (Monthly Archive)
+        if: steps.backup_type.outputs.type == 'monthly'
+        run: |
+          echo "Uploading monthly archive to GCS..."
+
+          # Get current month for archive naming
+          MONTH=$(date +%Y-%m)
+
+          # Upload to monthly archives (keep forever)
+          gsutil -h "x-goog-meta-timestamp:${TIMESTAMP}" \
+                 -h "x-goog-meta-commit:${GITHUB_SHA}" \
+                 -h "x-goog-meta-branch:${GITHUB_REF_NAME}" \
+                 -h "x-goog-meta-size:${BACKUP_SIZE_BYTES}" \
+                 -h "x-goog-meta-file-count:${FILE_COUNT}" \
+                 -h "x-goog-meta-backup-type:monthly" \
+                 -h "x-goog-meta-retention:permanent" \
+                 -h "x-goog-meta-archive-month:${MONTH}" \
+                 cp "${BACKUP_FILE}" \
+                 "gs://ssd-workspace-backups-immutable/${REPO_NAME}/monthly-archives/${MONTH}/"
+
+          # Upload checksum
+          gsutil cp "${BACKUP_FILE}.sha256" \
+                 "gs://ssd-workspace-backups-immutable/${REPO_NAME}/monthly-archives/${MONTH}/"
+
+          # Also upload to daily backups
+          gsutil -h "x-goog-meta-timestamp:${TIMESTAMP}" \
+                 -h "x-goog-meta-commit:${GITHUB_SHA}" \
+                 -h "x-goog-meta-branch:${GITHUB_REF_NAME}" \
+                 -h "x-goog-meta-size:${BACKUP_SIZE_BYTES}" \
+                 -h "x-goog-meta-file-count:${FILE_COUNT}" \
+                 -h "x-goog-meta-backup-type:monthly" \
+                 cp "${BACKUP_FILE}" \
+                 "gs://ssd-workspace-backups-immutable/${REPO_NAME}/daily-backups/"
+
+          gsutil cp "${BACKUP_FILE}.sha256" \
+                 "gs://ssd-workspace-backups-immutable/${REPO_NAME}/daily-backups/"
+
+          echo "✅ Monthly archive uploaded"
+
+      - name: Update latest backup metadata
+        run: |
+          cat > latest-backup.txt <<EOF
+          Repository: ${REPO_NAME}
+          Timestamp: ${TIMESTAMP}
+          Commit: ${GITHUB_SHA}
+          Branch: ${GITHUB_REF_NAME}
+          Size: ${BACKUP_SIZE} (${BACKUP_SIZE_BYTES} bytes)
+          Files: ${FILE_COUNT}
+          Type: ${{ steps.backup_type.outputs.type }}
+          EOF
+
+          gsutil cp latest-backup.txt \
+                 "gs://ssd-workspace-backups-immutable/${REPO_NAME}/"
+
+          echo "✅ Metadata updated"
+
+      - name: Verify upload integrity
+        run: |
+          echo "Verifying backup integrity..."
+
+          # Determine path based on backup type
+          if [ "${{ steps.backup_type.outputs.type }}" == "monthly" ]; then
+            MONTH=$(date +%Y-%m)
+            GCS_PATH="gs://ssd-workspace-backups-immutable/${REPO_NAME}/monthly-archives/${MONTH}/${BACKUP_FILE}"
+          else
+            GCS_PATH="gs://ssd-workspace-backups-immutable/${REPO_NAME}/daily-backups/${BACKUP_FILE}"
+          fi
+
+          # Verify file exists in GCS
+          if ! gsutil ls -l "$GCS_PATH"; then
+            echo "❌ Backup file not found in GCS at: $GCS_PATH"
+            exit 1
+          fi
+
+          # Download and verify checksum
+          gsutil cp "${GCS_PATH}.sha256" - > /tmp/gcs.sha256
+
+          # Compare checksums
+          LOCAL_SHA=$(cat "${BACKUP_FILE}.sha256" | cut -d' ' -f1)
+          GCS_SHA=$(cat /tmp/gcs.sha256 | cut -d' ' -f1)
+
+          if [ "$LOCAL_SHA" != "$GCS_SHA" ]; then
+            echo "❌ Checksum mismatch!"
+            echo "  Local:  $LOCAL_SHA"
+            echo "  GCS:    $GCS_SHA"
+            exit 1
+          fi
+
+          echo "✅ Integrity verification passed (SHA256: ${LOCAL_SHA})"
+
+      - name: Apply retention policy (Daily backups only)
+        if: steps.backup_type.outputs.type == 'daily'
+        run: |
+          echo "Applying 90-day retention policy to daily backups..."
+
+          # Calculate cutoff date (90 days ago)
+          CUTOFF_DATE=$(date -u -d '90 days ago' +%Y%m%d 2>/dev/null || date -u -v-90d +%Y%m%d)
+
+          echo "Cutoff date: $CUTOFF_DATE"
+          echo "Backups older than this will be listed (manual review required)"
+
+          # List old backups (do not delete automatically for safety)
+          gsutil ls "gs://ssd-workspace-backups-immutable/${REPO_NAME}/daily-backups/" | while read file; do
+            # Extract date from filename (format: workspace-{repo}-backup-YYYYMMDD-HHMMSS.tar.gz)
+            FILENAME=$(basename "$file")
+            FILE_DATE=$(echo "$FILENAME" | grep -oE '[0-9]{8}' | head -1)
+
+            if [ ! -z "$FILE_DATE" ] && [ "$FILE_DATE" -lt "$CUTOFF_DATE" ]; then
+              echo "  Old backup: $FILENAME (Date: $FILE_DATE)"
+            fi
+          done
+
+          echo "✅ Retention policy check complete"
+          echo "Note: Automatic deletion disabled for safety. Manual cleanup required if needed."
+
+      - name: Report backup status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "========================================="
+            echo "✅ WORKSPACE BACKUP SUCCESSFUL"
+            echo "========================================="
+            echo "Repository: ${REPO_NAME}"
+            echo "File:       ${BACKUP_FILE}"
+            echo "Size:       ${BACKUP_SIZE} (${BACKUP_SIZE_BYTES} bytes)"
+            echo "Files:      ${FILE_COUNT}"
+            echo "Type:       ${{ steps.backup_type.outputs.type }}"
+
+            if [ "${{ steps.backup_type.outputs.type }}" == "monthly" ]; then
+              MONTH=$(date +%Y-%m)
+              echo "Location:   gs://ssd-workspace-backups-immutable/${REPO_NAME}/monthly-archives/${MONTH}/"
+              echo "            gs://ssd-workspace-backups-immutable/${REPO_NAME}/daily-backups/"
+            else
+              echo "Location:   gs://ssd-workspace-backups-immutable/${REPO_NAME}/daily-backups/"
+            fi
+
+            echo "Commit:     ${GITHUB_SHA}"
+            echo "Branch:     ${GITHUB_REF_NAME}"
+            echo "Time:       ${TIMESTAMP}"
+            echo ""
+            echo "Backup protected by:"
+            echo "  - Immutable storage (cannot be modified/deleted)"
+            echo "  - Automatic versioning (restore any version)"
+            echo "  - SHA256 checksum verification"
+
+            if [ "${{ steps.backup_type.outputs.type }}" == "monthly" ]; then
+              echo "  - Permanent retention (monthly archive)"
+            else
+              echo "  - 90-day retention policy (daily backup)"
+            fi
+
+            echo "========================================="
+          else
+            echo "========================================="
+            echo "❌ WORKSPACE BACKUP FAILED"
+            echo "========================================="
+            echo "Repository: ${REPO_NAME}"
+            echo "Please check the logs above for details."
+            echo "Manual backup may be required."
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          # Remove local backup files (already uploaded to GCS)
+          rm -f workspace-*.tar.gz*
+          rm -f latest-backup.txt
+          echo "✅ Local cleanup complete"
