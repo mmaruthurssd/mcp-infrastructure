@@ -75,13 +75,14 @@ jobs:
 
           # Create compressed backup of ENTIRE workspace
           # Exclude: .git/, node_modules/, *.log, .DS_Store
+          # Note: Exit code 1 from tar means "file changed as we read it" which is safe to ignore
           tar -czf "$BACKUP_FILE" \
             --exclude='.git' \
             --exclude='node_modules' \
             --exclude='*.log' \
             --exclude='.DS_Store' \
             --exclude='.github/workflows/workspace-backup-gcs.yml' \
-            .
+            . || [ $? -eq 1 ]
 
           # Calculate SHA256 checksum
           sha256sum "$BACKUP_FILE" > "${BACKUP_FILE}.sha256"
