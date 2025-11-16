@@ -165,23 +165,6 @@ jobs:
 
           echo "✅ Monthly archive uploaded"
 
-      - name: Update latest backup metadata
-        run: |
-          cat > latest-backup.txt <<EOF
-          Repository: ${REPO_NAME}
-          Timestamp: ${TIMESTAMP}
-          Commit: ${GITHUB_SHA}
-          Branch: ${GITHUB_REF_NAME}
-          Size: ${BACKUP_SIZE} (${BACKUP_SIZE_BYTES} bytes)
-          Files: ${FILE_COUNT}
-          Type: ${{ steps.backup_type.outputs.type }}
-          EOF
-
-          gsutil cp latest-backup.txt \
-                 "gs://ssd-workspace-backups-immutable/${REPO_NAME}/"
-
-          echo "✅ Metadata updated"
-
       - name: Verify upload integrity
         run: |
           echo "Verifying backup integrity..."
